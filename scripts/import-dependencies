@@ -1,0 +1,56 @@
+#! /usr/bin/env bash
+
+set -e # exit on error
+
+TOP=${TOP:-$(git rev-parse --show-toplevel)}
+EXT=$TOP/ext
+
+CATCH_VERSION=1.5.0
+LUAJIT_VERSION=2.0.4
+LIBCK_VERSION=0.5.1
+
+subtree()
+{
+    local project="$1"
+    local cmd="add"
+
+    shift
+
+    if [ -d ext/"$project" ] ; then
+        cmd="pull"
+    fi
+
+    git subtree $cmd \
+        --prefix=ext/$project \
+        --squash \
+        "$@"
+}
+
+echo updating Catch to $CATCH_VERSION ...
+mkdir -p $EXT/catch
+curl --progress-bar \
+    -o $EXT/catch/catch.hpp \
+    https://raw.githubusercontent.com/philsquared/Catch/V$CATCH_VERSION/single_include/catch.hpp
+
+git add $EXT/catch/catch.hpp && \
+    git commit -m "Update Catch to version $CATCH_VERSION" $EXT/catch/catch.hpp
+
+echo updating LuaJit to $LUAJIT_VERSION ...
+(
+    pushd $TOP
+    subtree luajit \
+        --message "Update LuaJIT to version v$LUAJIT_VERSION" \
+        http://luajit.org/git/luajit-2.0.git \
+        v$LUAJIT_VERSION
+)
+
+
+echo updating ConcurrencyKit to $LIBCK_VERSION ...
+(
+    pushd $TOP
+    subtree libck \
+        --message "Update ConcurrencyKit to version v$LIBCK_VERSION" \
+        https://github.com/concurrencykit/ck.git \
+        $LIBCK_VERSION
+)
+
