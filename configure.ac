@@ -54,8 +54,11 @@ AX_CHECK_LIBRARY([ACL], [sys/acl.h], [acl],
     AC_MSG_ERROR(libacl support is required)
 )
 
+AC_CONFIG_SUBDIRS([ext/libck])
+
 AC_OUTPUT([
     Makefile
+    ext/Makefile
 ])
 
 AC_MSG_NOTICE([Build option summary:
@@ -66,3 +69,4 @@ AC_MSG_NOTICE([Build option summary:
     CPPFLAGS:  $CPPFLAGS
     LDFLAGS:   $LDFLAGS
 ])
+# vim: sw=4 sts=4 ts=4 et:
