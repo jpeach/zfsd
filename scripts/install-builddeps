@@ -1,0 +1,17 @@
+#! /usr/bin/env bash
+# Install build dependencies.
+
+if [ -x $(which dnf) ]; then
+    sudo dnf install -y \
+        autoconf \
+        autoconf-archive \
+        automake \
+        gcc \
+        gcc-c++ \
+        libacl-devel \
+        libaio-devel \
+        libtool \
+        libtool-ltdl-devel \
+        openssl-devel \
+        zlib-devel
+fi
