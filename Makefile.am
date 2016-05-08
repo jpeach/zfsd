@@ -1,2 +1,2 @@
 ACLOCAL_AMFLAGS = -Im4
-SUBDIRS = libltdl ext
+SUBDIRS = libltdl ext src

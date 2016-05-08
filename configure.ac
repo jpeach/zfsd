@@ -59,6 +59,7 @@ AC_CONFIG_SUBDIRS([ext/libck])
 AC_OUTPUT([
     Makefile
     ext/Makefile
+    src/Makefile
 ])
 
 AC_MSG_NOTICE([Build option summary:
