@@ -1,0 +1,26 @@
+#! /usr/bin/env bash
+
+TOP=${TOP:-$(git rev-parse --show-toplevel)}
+
+cd $TOP
+
+if [ ! -d .openzfs ]; then
+    git clone https://github.com/openzfs/openzfs.git .openzfs
+fi
+
+(
+    cd .openzfs
+
+    git checkout master
+    git pull
+    git branch -D export
+    git subtree split --prefix=usr/src/uts/common/fs/zfs --branch=export
+)
+
+if [ -d src/fs/zfs ]; then
+    git subtree pull  --prefix=src/fs/zfs $(pwd)/.openzfs export
+else
+    git subtree add  --prefix=src/fs/zfs $(pwd)/.openzfs export
+fi
+
+#rm -rf .openzfs
