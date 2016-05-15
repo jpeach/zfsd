@@ -3,6 +3,8 @@ noinst_LTLIBRARIES =
 bin_PROGRAMS =
 check_PROGRAMS =
 
+EXTRA_DIST = include
+
 CATCH = $(top_srcdir)/ext/catch
 CATCH_CPPFLAGS = -I$(CATCH)
 
@@ -13,10 +15,13 @@ LUAJIT_CPPFLAGS = -I$(top_srcdir)/ext/luajit/src
 LUAJIT_LIBS = $(top_builddir)/ext/luajit/src/libluajit.a
 
 AM_CPPFLAGS = \
+	-D_KERNEL \
 	$(LTDLINCL) \
 	$(CATCH_CPPFLAGS) \
 	$(LIBCK_CPPFLAGS) \
-	$(LUAJIT_CPPFLAGS)
+	$(LUAJIT_CPPFLAGS) \
+	-I$(srcdir)/include \
+	-I$(srcdir)/lib/libspl
 
 check_PROGRAMS += check-tests
 
@@ -30,6 +35,7 @@ check_tests_LDADD = \
 	$(LIBLTDL) \
 	-ldl
 
-
 # Always build test programs.
 noinst_PROGRAMS = $(check_PROGRAMS)
+
+include lib/libnvpair/Makefile.inc
