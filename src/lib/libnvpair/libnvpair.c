@@ -29,8 +29,12 @@
 #include <sys/types.h>
 #include <sys/inttypes.h>
 #include <stdarg.h>
-#include <note.h>
 #include "libnvpair.h"
+
+#if defined(__zfsd__)
+#include <sys/sysmacros.h>
+#define NOTE _NOTE
+#endif
 
 /*
  * libnvpair - A tools library for manipulating <name, value> pairs.
