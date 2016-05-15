@@ -24,14 +24,4 @@
 #ifndef DEBUG_H_14816539_54B1_4DF6_AE30_F8D17D3AA7A5
 #define DEBUG_H_14816539_54B1_4DF6_AE30_F8D17D3AA7A5
 
-#ifdef  __cplusplus
-extern "C" {
-#endif
-
-#include_next <sys/debug.h>
-
-#ifdef  __cplusplus
-}
-#endif
-
 #endif /* DEBUG_H_14816539_54B1_4DF6_AE30_F8D17D3AA7A5 */

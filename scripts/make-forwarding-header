@@ -67,15 +67,7 @@ cat > "$path" <<EOF
 #ifndef $guard
 #define $guard
 
-#ifdef  __cplusplus
-extern "C" {
-#endif
-
-#include_next <sys/$name>
-
-#ifdef  __cplusplus
-}
-#endif
+#include <spl/$name>
 
 #endif /* $guard */
 EOF

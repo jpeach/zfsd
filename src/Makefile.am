@@ -39,3 +39,4 @@ check_tests_LDADD = \
 noinst_PROGRAMS = $(check_PROGRAMS)
 
 include lib/libnvpair/Makefile.inc
+#NOTYET#include lib/libspl/Makefile.inc

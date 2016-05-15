@@ -25,7 +25,11 @@
 
 #include <unistd.h>
 #include <string.h>
+#if !defined(__zfsd__)
 #include <libintl.h>
+#else
+#define dgettext(domain, ...) __VA_ARGS__
+#endif
 #include <sys/types.h>
 #include <sys/inttypes.h>
 #include <stdarg.h>

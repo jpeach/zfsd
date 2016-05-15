@@ -24,15 +24,15 @@
 #ifndef TYPES_H_811D0750_7B93_4832_940A_8AF421DAF20A
 #define TYPES_H_811D0750_7B93_4832_940A_8AF421DAF20A
 
-#ifdef  __cplusplus
-extern "C" {
-#endif
-
 #include <stddef.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include <inttypes.h>
-#include <sys/types.h>
+#include_next <sys/types.h>
+
+#ifdef  __cplusplus
+extern "C" {
+#endif
 
 typedef enum { B_FALSE, B_TRUE } boolean_t;
 
@@ -68,5 +68,9 @@ typedef int fd_t;
 
 typedef struct iovec iovec_t;
 typedef u_longlong_t diskaddr_t;
+
+#ifdef  __cplusplus
+}
+#endif
 
 #endif /* TYPES_H_811D0750_7B93_4832_940A_8AF421DAF20A */

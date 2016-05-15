@@ -24,14 +24,6 @@
 #ifndef SYSMACROS_H_F0E3EF69_AD94_4E55_84A6_34E7082D13FF
 #define SYSMACROS_H_F0E3EF69_AD94_4E55_84A6_34E7082D13FF
 
-#ifdef  __cplusplus
-extern "C" {
-#endif
-
 #include <spl/sysmacros.h>
-
-#ifdef  __cplusplus
-}
-#endif
 
 #endif /* SYSMACROS_H_F0E3EF69_AD94_4E55_84A6_34E7082D13FF */
