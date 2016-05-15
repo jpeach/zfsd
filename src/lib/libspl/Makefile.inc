@@ -4,6 +4,7 @@ libspl_la_SOURCES = \
 	lib/libspl/fnvpair.c \
 	lib/libspl/nvpair.c \
 	lib/libspl/nvpair_alloc_fixed.c \
+	lib/libspl/nvpair_alloc_system.c \
 	lib/libspl/spl/nvpair.h \
 	lib/libspl/spl/nvpair_impl.h \
 	lib/libspl/spl/sysmacros.h \
