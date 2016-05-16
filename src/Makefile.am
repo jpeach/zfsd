@@ -23,9 +23,11 @@ AM_CPPFLAGS = \
 	$(LIBCK_CPPFLAGS) \
 	$(LUAJIT_CPPFLAGS) \
 	-I$(srcdir)/include \
+	-I$(srcdir)/fs/zfs \
 	-I$(srcdir)/lib/libnvpair \
 	-I$(srcdir)/lib/libspl
 
 include lib/libnvpair/Makefile.inc
 include lib/libspl/Makefile.inc
+include fs/Makefile.inc
 include tests/Makefile.inc
