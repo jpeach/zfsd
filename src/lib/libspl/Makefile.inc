@@ -1,16 +1,19 @@
 noinst_LTLIBRARIES += libspl.la
 
 libspl_la_SOURCES = \
+	lib/libspl/avl.c \
 	lib/libspl/debug.c \
 	lib/libspl/fnvpair.c \
 	lib/libspl/nvpair.c \
 	lib/libspl/nvpair_alloc_fixed.c \
 	lib/libspl/nvpair_alloc_system.c \
+	lib/libspl/spl/avl.h \
+	lib/libspl/spl/avl_impl.h \
+	lib/libspl/spl/cmn_err.h \
 	lib/libspl/spl/nvpair.h \
 	lib/libspl/spl/nvpair_impl.h \
 	lib/libspl/spl/sysmacros.h \
 	lib/libspl/spl/types.h \
-	lib/libspl/spl/cmn_err.h \
 	lib/libspl/sys/debug.h
 
 # vim: sw=8 ts=8 sts=8 noet ft=make:
