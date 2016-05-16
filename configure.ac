@@ -32,9 +32,23 @@ AX_APPEND_FLAG([-D_GNU_SOURCE=1], [CPPFLAGS])
 AX_APPEND_FLAG([-D__STDC_LIMIT_MACROS=1], [CPPFLAGS])
 AX_APPEND_FLAG([-D__STDC_FORMAT_MACROS=1], [CPPFLAGS])
 
+# Force rich debug symbol generation.
+ZFSD_REMOVE_COMPILE_FLAGS([C C++], [-g])
+AS_CASE($ax_cv_c_compiler_vendor,
+    [gnu], [ZFSD_APPEND_COMPILE_FLAGS([C C++], [-ggdb3])],
+    [ZFSD_APPEND_COMPILE_FLAGS([C C++], [-g])]
+)
+
 AS_IF([test "x$enable_debug" != "xyes"], [
     AX_APPEND_FLAG([-DNDEBUG=1], [CPPFLAGS])
+], [
+    # Remove autoconf's default optimizations.
+    ZFSD_REMOVE_COMPILE_FLAGS([C C++], [-O2])
+    ZFSD_APPEND_COMPILE_FLAGS([C C++], [-O0])
 ])
+
+ZFSD_APPEND_COMPILE_FLAGS([C], [-std=gnu11])
+ZFSD_APPEND_COMPILE_FLAGS([C++], [-std=gnu++11])
 
 # openssl-devel is required.
 PKG_CHECK_MODULES([CRYPTO], [libcrypto], [], AC_MSG_ERROR(libcrypto support is required))
