@@ -24,6 +24,8 @@
 #include <catch.hpp>
 #include <lua.hpp>
 #include <ck_pr.h>
+#include <libnvpair.h>
+#include <string.h>
 
 TEST_CASE("Link libck", "[link]")
 {
@@ -41,6 +43,29 @@ TEST_CASE("Link LuaJit", "[link]")
     REQUIRE(lua != NULL);
 
     lua_close(lua);
+}
+
+TEST_CASE("Link libnvpair", "[link]")
+{
+    char json[BUFSIZ];
+
+    nvlist_t * nv;
+    FILE * fp;
+
+    fp = fmemopen(json, sizeof(json), "w");
+    REQUIRE(fp != nullptr);
+
+    nv = fnvlist_alloc();
+    REQUIRE(nv != nullptr);
+
+    REQUIRE(nvlist_add_boolean_value(nv, "bool", B_TRUE) == ESUCCESS);
+    REQUIRE(nvlist_print_json(fp, nv) == 0);
+
+    fclose(fp);
+
+    REQUIRE(::strcmp("{\"bool\":true}", json) == 0);
+
+    nvlist_free(nv);
 }
 
 /* vim: set sts=4 sw=4 ts=4 tw=79 et: */

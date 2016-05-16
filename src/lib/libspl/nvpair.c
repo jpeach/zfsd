@@ -23,6 +23,13 @@
  * Copyright (c) 2000, 2010, Oracle and/or its affiliates. All rights reserved.
  */
 
+/* Since we are just dealing with nvlists, it is easier to just undef
+ * _KERNEL than to check __zfsd__ in each place.
+ */
+#if defined(__zfsd__)
+#undef _KERNEL
+#endif
+
 #include <sys/stropts.h>
 #include <sys/debug.h>
 #include <sys/isa_defs.h>
@@ -3244,7 +3251,9 @@ nvs_xdr_nvpair(nvstream_t *nvs, nvpair_t *nvp, size_t *size)
 		return (nvs_xdr_nvp_op(nvs, nvp));
 	}
 	case NVS_OP_DECODE: {
+#if defined(illumos)
 		struct xdr_bytesrec bytesrec;
+#endif
 
 		/* get the encode and decode size */
 		if (!xdr_int(xdr, &encode_len) || !xdr_int(xdr, &decode_len))
@@ -3255,12 +3264,14 @@ nvs_xdr_nvpair(nvstream_t *nvs, nvpair_t *nvp, size_t *size)
 		if (*size == 0)
 			return (0);
 
+#if defined(illumos)
 		/* sanity check the size parameter */
 		if (!xdr_control(xdr, XDR_GET_BYTES_AVAIL, &bytesrec))
 			return (EFAULT);
 
 		if (*size > NVS_XDR_MAX_LEN(bytesrec.xc_num_avail))
 			return (EFAULT);
+#endif
 		break;
 	}
 

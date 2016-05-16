@@ -2,8 +2,10 @@ pkglib_LTLIBRARIES =
 noinst_LTLIBRARIES =
 bin_PROGRAMS =
 check_PROGRAMS =
+noinst_PROGRAMS =
 
 EXTRA_DIST = include
+TESTS = $(check_PROGRAMS)
 
 CATCH = $(top_srcdir)/ext/catch
 CATCH_CPPFLAGS = -I$(CATCH)
@@ -21,22 +23,9 @@ AM_CPPFLAGS = \
 	$(LIBCK_CPPFLAGS) \
 	$(LUAJIT_CPPFLAGS) \
 	-I$(srcdir)/include \
+	-I$(srcdir)/lib/libnvpair \
 	-I$(srcdir)/lib/libspl
 
-check_PROGRAMS += check-tests
-
-check_tests_SOURCES = \
-	tests/link.cc \
-	tests/main.cc 
-
-check_tests_LDADD = \
-	$(LIBCK_LIBS) \
-	$(LUAJIT_LIBS) \
-	$(LIBLTDL) \
-	-ldl
-
-# Always build test programs.
-noinst_PROGRAMS = $(check_PROGRAMS)
-
 include lib/libnvpair/Makefile.inc
-#NOTYET#include lib/libspl/Makefile.inc
+include lib/libspl/Makefile.inc
+include tests/Makefile.inc
