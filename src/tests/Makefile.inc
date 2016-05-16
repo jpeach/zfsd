@@ -2,7 +2,6 @@ check_PROGRAMS += check-tests
 
 check_tests_SOURCES = \
 	tests/link.cc \
-	tests/nvpair.cc \
 	tests/main.cc
 
 check_tests_LDADD = \
