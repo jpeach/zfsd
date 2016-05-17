@@ -9,6 +9,7 @@ libspl_la_SOURCES = \
 	lib/libspl/nvpair.c \
 	lib/libspl/nvpair_alloc_fixed.c \
 	lib/libspl/nvpair_alloc_system.c \
+	lib/libspl/rwlock.c \
 	lib/libspl/spl/atomic.h \
 	lib/libspl/spl/avl.h \
 	lib/libspl/spl/avl_impl.h \
@@ -17,6 +18,7 @@ libspl_la_SOURCES = \
 	lib/libspl/spl/mutex.h \
 	lib/libspl/spl/nvpair.h \
 	lib/libspl/spl/nvpair_impl.h \
+	lib/libspl/spl/rwlock.h \
 	lib/libspl/spl/sysmacros.h \
 	lib/libspl/spl/time.h \
 	lib/libspl/spl/types.h \

@@ -23,6 +23,7 @@
 
 #include <catch.hpp>
 #include <spl/atomic.h>
+#include <spl/rwlock.h>
 
 // Basic atomic ops tests. We are not testing the atomicity here, just
 // that the APIs return the expected values (ie. the pre- or post- value.
@@ -58,6 +59,35 @@ TEST_CASE("Basic 64bit atomic ops", "[spl]")
 
     atomic_add_64(&start, -59);
     REQUIRE(start == 0);
+}
+
+TEST_CASE("Basic rwlock API", "[spl]")
+{
+    krwlock_t rw;
+
+    rw_init(&rw, NULL, RW_DEFAULT, NULL);
+
+    rw_enter(&rw, RW_READER);
+    REQUIRE(RW_READ_HELD(&rw));
+    REQUIRE(RW_WRITE_HELD(&rw) == false);
+    REQUIRE(rw_tryenter(&rw, RW_WRITER) == false);
+
+    rw_exit(&rw);
+    REQUIRE(RW_READ_HELD(&rw) == false);
+    REQUIRE(RW_LOCK_HELD(&rw) == false);
+
+    rw_enter(&rw, RW_WRITER);
+    REQUIRE(RW_READ_HELD(&rw) == false);
+    REQUIRE(RW_WRITE_HELD(&rw) == true);
+
+    REQUIRE(rw_tryenter(&rw, RW_WRITER) == false);
+    REQUIRE(rw_tryenter(&rw, RW_READER) == false);
+
+    rw_exit(&rw);
+    REQUIRE(RW_LOCK_HELD(&rw) == false);
+    REQUIRE(RW_WRITE_HELD(&rw) == false);
+
+    rw_destroy(&rw);
 }
 
 /* vim: set sts=4 sw=4 ts=4 tw=79 et: */

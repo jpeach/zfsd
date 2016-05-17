@@ -42,6 +42,7 @@ typedef struct kmutex
 
 static inline void
 mutex_init(kmutex_t * m, char * name, kmutex_type_t type, void * arg) {
+    m->holder = INVALID_KTHREAD;
     pthread_mutex_init(&m->mutex, NULL);
 }
 
@@ -68,7 +69,7 @@ mutex_tryenter(kmutex_t * m) {
 
 static inline void
 mutex_exit(kmutex_t * m) {
-    m->holder = 0;
+    m->holder = INVALID_KTHREAD;
     pthread_mutex_unlock(&m->mutex);
 }
 
@@ -79,8 +80,7 @@ mutex_owner(const kmutex_t * m) {
 
 static inline bool
 MUTEX_HELD(const kmutex_t *m) {
-    return m->holder != 0 &&
-        pthread_equal(kthread_to_pthread(m->holder), pthread_self());
+    return pthread_equal(kthread_to_pthread(m->holder), pthread_self());
 }
 
 static inline bool
