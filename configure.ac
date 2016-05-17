@@ -49,6 +49,7 @@ AS_IF([test "x$enable_debug" != "xyes"], [
 
 ZFSD_APPEND_COMPILE_FLAGS([C], [-std=gnu11])
 ZFSD_APPEND_COMPILE_FLAGS([C++], [-std=gnu++11])
+ZFSD_APPEND_COMPILE_FLAGS([C C++], [-Wall -Wno-unknown-pragmas -fno-omit-frame-pointer])
 
 # openssl-devel is required.
 PKG_CHECK_MODULES([CRYPTO], [libcrypto], [], AC_MSG_ERROR(libcrypto support is required))
