@@ -2,6 +2,8 @@ noinst_LTLIBRARIES += libspl.la
 
 libspl_la_SOURCES = \
 	lib/libspl/avl.c \
+	lib/libspl/bitmap.c \
+	lib/libspl/bitmap_arch.c \
 	lib/libspl/debug.c \
 	lib/libspl/fnvpair.c \
 	lib/libspl/nvpair.c \
@@ -10,6 +12,7 @@ libspl_la_SOURCES = \
 	lib/libspl/spl/atomic.h \
 	lib/libspl/spl/avl.h \
 	lib/libspl/spl/avl_impl.h \
+	lib/libspl/spl/bitmap.h \
 	lib/libspl/spl/cmn_err.h \
 	lib/libspl/spl/nvpair.h \
 	lib/libspl/spl/nvpair_impl.h \
