@@ -14,6 +14,7 @@ libspl_la_SOURCES = \
 	lib/libspl/spl/avl_impl.h \
 	lib/libspl/spl/bitmap.h \
 	lib/libspl/spl/cmn_err.h \
+	lib/libspl/spl/mutex.h \
 	lib/libspl/spl/nvpair.h \
 	lib/libspl/spl/nvpair_impl.h \
 	lib/libspl/spl/sysmacros.h \
