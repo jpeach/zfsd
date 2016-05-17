@@ -7,6 +7,7 @@ libspl_la_SOURCES = \
 	lib/libspl/nvpair.c \
 	lib/libspl/nvpair_alloc_fixed.c \
 	lib/libspl/nvpair_alloc_system.c \
+	lib/libspl/spl/atomic.h \
 	lib/libspl/spl/avl.h \
 	lib/libspl/spl/avl_impl.h \
 	lib/libspl/spl/cmn_err.h \
