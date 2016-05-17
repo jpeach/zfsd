@@ -18,6 +18,7 @@ libspl_la_SOURCES = \
 	lib/libspl/spl/nvpair.h \
 	lib/libspl/spl/nvpair_impl.h \
 	lib/libspl/spl/sysmacros.h \
+	lib/libspl/spl/time.h \
 	lib/libspl/spl/types.h \
 	lib/libspl/sys/debug.h
 
