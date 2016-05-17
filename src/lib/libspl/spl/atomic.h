@@ -85,28 +85,40 @@ atomic_add_64(uint64_t * ptr, int64_t amt) {
     }
 }
 
-// Atomic decrement, returning the new value.
-static inline uint32_t
-atomic_dec_32_nv(uint32_t * ptr) {
-    return __sync_sub_and_fetch(ptr, 1);
-}
-
 // Atomic increment, returning the new value.
-static inline uint64_t
-atomic_dec_64_nv(uint64_t * ptr) {
-    return __sync_sub_and_fetch(ptr, 1);
+static inline uint32_t
+atomic_add_32_nv(uint32_t * ptr, int32_t amt) {
+    return ck_pr_faa_32(ptr, amt) + amt;
 }
 
 // Atomic increment, returning the new value.
 static inline uint64_t
 atomic_add_64_nv(uint64_t * ptr, int64_t amt) {
-    return __sync_add_and_fetch(ptr, amt);
+    return ck_pr_faa_64(ptr, amt) + amt;
+}
+
+// Atomic increment, returning the new value.
+static inline uint32_t
+atomic_inc_32_nv(uint32_t * ptr) {
+    return atomic_add_32_nv(ptr, 1);
 }
 
 // Atomic increment, returning the new value.
 static inline uint64_t
 atomic_inc_64_nv(uint64_t * ptr) {
-    return __sync_add_and_fetch(ptr, 1);
+    return atomic_add_64_nv(ptr, 1);
+}
+
+// Atomic decrement, returning the new value.
+static inline uint32_t
+atomic_dec_32_nv(uint32_t * ptr) {
+    return atomic_add_32_nv(ptr, -1);
+}
+
+// Atomic increment, returning the new value.
+static inline uint64_t
+atomic_dec_64_nv(uint64_t * ptr) {
+    return atomic_add_64_nv(ptr, -1);
 }
 
 // The value stored in target is replaced with newval. The old value
