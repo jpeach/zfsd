@@ -7,6 +7,7 @@ libspl_la_SOURCES = \
 	lib/libspl/condvar.c \
 	lib/libspl/debug.c \
 	lib/libspl/fnvpair.c \
+	lib/libspl/list.c \
 	lib/libspl/nvpair.c \
 	lib/libspl/nvpair_alloc_fixed.c \
 	lib/libspl/nvpair_alloc_system.c \
@@ -20,6 +21,8 @@ libspl_la_SOURCES = \
 	lib/libspl/spl/cmn_err.h \
 	lib/libspl/spl/condvar.h \
 	lib/libspl/spl/debug.h \
+	lib/libspl/spl/list.h \
+	lib/libspl/spl/list_impl.h \
 	lib/libspl/spl/mutex.h \
 	lib/libspl/spl/nvpair.h \
 	lib/libspl/spl/nvpair_impl.h \
