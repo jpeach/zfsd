@@ -20,27 +20,9 @@
 # Generate a standard forwarding header for <sys/...> includes used by
 # Solaris code.
 
-mkheader()
-{
-  if [ -e "$1" ] ; then
-    echo $1 exists
-    return
-  fi
+PROGNAME="$(basename $0)"
 
-  echo making $1
-
-  path="$1"
-  name=`basename "$1"`
-  year=`date +%Y`
-  uuid=`uuidgen`
-
-  guard=`echo ${name}_${uuid} | tr a-z A-Z | sed 's/[-. ]/_/g' `
-
-  if [ ! -e $(dirname "$1") ]; then
-    mkdir -p $(dirname "$1")
-  fi
-
-cat > "$path" <<EOF
+ASPL='
 /** @file
  *
  *  A brief file description
@@ -63,6 +45,25 @@ cat > "$path" <<EOF
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+'
+
+mkguard() {
+  name=`basename "$1"`
+  year=`date +%Y`
+  uuid=`uuidgen`
+
+  echo ${name}_${uuid} | tr a-z A-Z | sed 's/[-. ]/_/g'
+}
+
+mkheader()
+{
+  echo making $1
+
+  path="$1"
+  guard=$(mkguard "$path")
+
+cat > "$path" <<EOF
+$ASPL
 
 #ifndef $guard
 #define $guard
@@ -73,14 +74,48 @@ cat > "$path" <<EOF
 EOF
 }
 
+mknull()
+{
+  echo making $1
+
+  path="$1"
+  guard=$(mkguard "$path")
+
+cat > "$path" <<EOF
+$ASPL
+
+#ifndef $guard
+#define $guard
+
+#endif /* $guard */
+EOF
+}
+
 while : ; do
   if [ -z "$1" ]; then
     exit
   fi
 
+  if [ -e "$1" ] ; then
+    echo $1 exists
+    continue
+  fi
+
   (
-    cd src/include/sys && \
-      mkheader $(basename "$1")
+    cd src/include/sys
+
+    if [ ! -e $(dirname "$path") ]; then
+      mkdir -p $(dirname "$path")
+    fi
+
+    case $PROGNAME in
+    make-null-header)
+      mknull $(basename "$1") ;;
+    make-forwarding-header)
+      mkheader $(basename "$1") ;;
+    *) ;;
+    esac
+
   )
 
   shift
