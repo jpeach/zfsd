@@ -37,6 +37,10 @@ typedef struct kthread kthread_t;
 // thread), so define a well-known invalid type.
 #define INVALID_KTHREAD ((kthread_t *)(uintptr_t)(-1))
 
+/* See usr/src/uts/common/sys/disp.h */
+#define minclsyspri 60    /* minimum level of any system class */
+#define maxclsyspri 99    /* maximum level of any system class */
+
 typedef void * (*pthread_proc_t)(void *);
 
 static inline kthread_t *

@@ -28,7 +28,44 @@
  * Copyright (c) 2014 by Delphix. All rights reserved.
  */
 
-#include <sys/zfs_context.h>
+#include <spl/taskq.h>
+#include <spl/taskq_impl.h>
+#include <spl/sysmacros.h>
+#include <spl/thread.h>
+#include <spl/debug.h>
+#include <spl/mutex.h>
+#include <spl/condvar.h>
+#include <spl/time.h>
+#include <spl/rwlock.h>
+#include <spl/kmem.h>
+#include <string.h>
+
+/* From usr/src/head/thread.h */
+#define THR_BOUND               0x00000001      /* = PTHREAD_SCOPE_SYSTEM */
+
+typedef kthread_t * thread_t;
+
+static int
+thr_create(void *stk, size_t stksize, pthread_proc_t func, void *arg,
+        long flags, thread_t *new_thread)
+{
+	(void)stk;
+	(void)stksize;
+	(void)flags;
+
+	*new_thread = thread_create_ex(func, arg, NULL);
+	return 0;
+}
+
+static int
+thr_join(thread_t tid, thread_t *departed, void **status)
+{
+	(void)departed;
+	(void)status;
+
+        thread_join(tid);
+	return 0;
+}
 
 int taskq_now;
 taskq_t *system_taskq;
@@ -313,7 +350,7 @@ taskq_destroy(taskq_t *tq)
 }
 
 int
-taskq_member(taskq_t *tq, void *t)
+taskq_member(taskq_t *tq, kthread_t *t)
 {
 	int i;
 
