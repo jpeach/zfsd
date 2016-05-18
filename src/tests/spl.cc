@@ -24,6 +24,8 @@
 #include <catch.hpp>
 #include <spl/atomic.h>
 #include <spl/rwlock.h>
+#include <spl/random.h>
+#include <string.h>
 
 // Basic atomic ops tests. We are not testing the atomicity here, just
 // that the APIs return the expected values (ie. the pre- or post- value.
@@ -89,5 +91,23 @@ TEST_CASE("Basic rwlock API", "[spl]")
 
     rw_destroy(&rw);
 }
+
+TEST_CASE("Basic random bytes", "[spl]")
+{
+    // Make a large oddly-sized buffer, since getrandom(2) tells us
+    // that reads of up to 256 bytes will always return as  many bytes
+    // as requested and will not be interrupted by signals.
+
+    uint8_t buf[512 * 1019];
+    uint8_t zero[512 * 1019];
+
+    memset(buf, 0, sizeof(buf));
+    memset(zero, 0, sizeof(buf));
+
+    REQUIRE(memcmp(buf, zero, sizeof(buf)) == 0);
+    REQUIRE(random_get_pseudo_bytes(buf, sizeof(buf)) == 0);
+    REQUIRE(memcmp(buf, zero, sizeof(buf)) != 0);
+}
+
 
 /* vim: set sts=4 sw=4 ts=4 tw=79 et: */
