@@ -5,6 +5,7 @@ libspl_la_SOURCES = \
 	lib/libspl/bitmap.c \
 	lib/libspl/bitmap_arch.c \
 	lib/libspl/condvar.c \
+	lib/libspl/cyclic.c \
 	lib/libspl/debug.c \
 	lib/libspl/fnvpair.c \
 	lib/libspl/list.c \
@@ -20,6 +21,7 @@ libspl_la_SOURCES = \
 	lib/libspl/spl/byteorder.h \
 	lib/libspl/spl/cmn_err.h \
 	lib/libspl/spl/condvar.h \
+	lib/libspl/spl/cyclic.h \
 	lib/libspl/spl/debug.h \
 	lib/libspl/spl/list.h \
 	lib/libspl/spl/list_impl.h \
