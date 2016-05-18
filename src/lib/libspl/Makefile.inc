@@ -31,6 +31,7 @@ libspl_la_SOURCES = \
 	lib/libspl/spl/sysmacros.h \
 	lib/libspl/spl/time.h \
 	lib/libspl/spl/types.h \
+	lib/libspl/spl/zone.h \
 	lib/libspl/taskq.c
 
 # vim: sw=8 ts=8 sts=8 noet ft=make:
