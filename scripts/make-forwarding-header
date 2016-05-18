@@ -68,7 +68,7 @@ $ASPL
 #ifndef $guard
 #define $guard
 
-#include <spl/$name>
+#include <spl/$(basename "$1")>
 
 #endif /* $guard */
 EOF
