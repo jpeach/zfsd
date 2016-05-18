@@ -25,6 +25,7 @@
 #include <spl/atomic.h>
 #include <spl/rwlock.h>
 #include <spl/random.h>
+#include <spl/byteorder.h>
 #include <string.h>
 
 // Basic atomic ops tests. We are not testing the atomicity here, just
@@ -109,5 +110,18 @@ TEST_CASE("Basic random bytes", "[spl]")
     REQUIRE(memcmp(buf, zero, sizeof(buf)) != 0);
 }
 
+TEST_CASE("Basic byte order", "[spl]")
+{
+    const uint8_t bytes[] = {
+        0, // Misalignment padding.
+        0x13, 0x88, // Big endian 5000.
+        0x10, 0x00, // Little endian 16.
+        0x58, 0x7A, 0xBC, 0x94 // Big endian 1484438676.
+    };
+
+    REQUIRE(BE_IN16(&bytes[1]) == 5000);
+    REQUIRE(LE_IN16(&bytes[3]) == 16);
+    REQUIRE(BE_IN32(&bytes[5]) == 1484438676);
+}
 
 /* vim: set sts=4 sw=4 ts=4 tw=79 et: */

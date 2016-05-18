@@ -16,6 +16,7 @@ libspl_la_SOURCES = \
 	lib/libspl/spl/avl.h \
 	lib/libspl/spl/avl_impl.h \
 	lib/libspl/spl/bitmap.h \
+	lib/libspl/spl/byteorder.h \
 	lib/libspl/spl/cmn_err.h \
 	lib/libspl/spl/condvar.h \
 	lib/libspl/spl/debug.h \
