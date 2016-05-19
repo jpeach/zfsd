@@ -23,6 +23,7 @@ AM_CPPFLAGS = \
 	$(LIBCK_CPPFLAGS) \
 	$(LUAJIT_CPPFLAGS) \
 	-I$(srcdir)/include \
+	-I$(srcdir)/fs/include \
 	-I$(srcdir)/fs/zfs \
 	-I$(srcdir)/lib/libnvpair \
 	-I$(srcdir)/lib/libspl

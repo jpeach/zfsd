@@ -25,6 +25,7 @@
 #define TIME_H_8A6940E8_1A9B_4522_8FC9_BC0502388D88
 
 #include_next <sys/time.h>
+#include <time.h>
 
 #ifdef  __cplusplus
 extern "C" {
