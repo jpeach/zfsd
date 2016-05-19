@@ -21,60 +21,20 @@
  *  limitations under the License.
  */
 
-#ifndef TYPES_H_811D0750_7B93_4832_940A_8AF421DAF20A
-#define TYPES_H_811D0750_7B93_4832_940A_8AF421DAF20A
+#ifndef VFS_H_6F224C03_01FA_469A_9077_52B5B2A11075
+#define VFS_H_6F224C03_01FA_469A_9077_52B5B2A11075
 
-#include <stddef.h>
-#include <stdint.h>
-#include <stdbool.h>
-#include <inttypes.h>
-#include_next <sys/types.h>
+#include <spl/types.h>
+#include <spl/vnode.h>
 
 #ifdef  __cplusplus
 extern "C" {
 #endif
 
-typedef enum { B_FALSE, B_TRUE } boolean_t;
-
-typedef unsigned long ulong_t;
-typedef unsigned long long u_longlong_t;
-typedef long long longlong_t;
-typedef unsigned int uint_t;
-typedef unsigned char uchar_t;
-typedef unsigned short ushort_t;
-
-typedef uint_t minor_t;
-typedef uint_t major_t;
-
-typedef off_t offset_t;
-typedef u_longlong_t u_offset_t;
-
-typedef uint64_t hrtime_t;
-
-typedef short pri_t;
-
-typedef struct vnode vnode_t;
-
-typedef int socket_t;
-
-typedef int errno_t;
-
-typedef int fd_t;
-
-typedef short index_t;
-
-typedef int zoneid_t;
-
-// Errno value for success.
-#if !defined(ESUCCESS)
-#define ESUCCESS 0
-#endif
-
-typedef struct iovec iovec_t;
-typedef u_longlong_t diskaddr_t;
+typedef struct vfs vfs_t;
 
 #ifdef  __cplusplus
 }
 #endif
 
-#endif /* TYPES_H_811D0750_7B93_4832_940A_8AF421DAF20A */
+#endif /* VFS_H_6F224C03_01FA_469A_9077_52B5B2A11075 */

@@ -29,6 +29,7 @@ libspl_la_SOURCES = \
 	lib/libspl/spl/idmap.h \
 	lib/libspl/spl/kidmap.h \
 	lib/libspl/spl/kmem.h \
+	lib/libspl/spl/kstat.h \
 	lib/libspl/spl/list.h \
 	lib/libspl/spl/list_impl.h \
 	lib/libspl/spl/mutex.h \
@@ -44,6 +45,8 @@ libspl_la_SOURCES = \
 	lib/libspl/spl/thread.h
 	lib/libspl/spl/time.h \
 	lib/libspl/spl/types.h \
+	lib/libspl/spl/vfs.h \
+	lib/libspl/spl/vnode.h \
 	lib/libspl/spl/zone.h \
 	lib/libspl/taskq.c \
 	lib/libspl/thread.c
