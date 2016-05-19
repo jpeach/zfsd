@@ -13,14 +13,24 @@ fi
 
     git checkout master
     git pull
-    git branch -D export
-    git subtree split --prefix=usr/src/uts/common/fs/zfs --branch=export
+
+    git branch -D zfs || true
+    git subtree split --prefix=usr/src/uts/common/fs/zfs --branch=zfs
+
+    git branch -D common || true
+    git subtree split --prefix=usr/src/common/zfs --branch=common
 )
 
 if [ -d src/fs/zfs ]; then
-    git subtree pull  --prefix=src/fs/zfs $(pwd)/.openzfs export
+    git subtree pull  --prefix=src/fs/zfs $(pwd)/.openzfs zfs
 else
-    git subtree add  --prefix=src/fs/zfs $(pwd)/.openzfs export
+    git subtree add  --prefix=src/fs/zfs $(pwd)/.openzfs zfs
+fi
+
+if [ -d src/fs/common ]; then
+    git subtree pull  --prefix=src/fs/common $(pwd)/.openzfs common
+else
+    git subtree add  --prefix=src/fs/common $(pwd)/.openzfs common
 fi
 
 #rm -rf .openzfs
