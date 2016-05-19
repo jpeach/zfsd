@@ -284,13 +284,19 @@ typedef struct vnode {
 
 #define	IS_SWAPVP(vp)	(((vp)->v_flag & (VISSWAP | VSWAPLIKE)) != 0)
 
+#if defined(__zfsd__)
+enum seg_rw;
+#endif
+
 typedef struct vn_vfslocks_entry {
+#if !defined(__zfsd__)
 	rwstlock_t ve_lock;
 	void *ve_vpvfs;
 	struct vn_vfslocks_entry *ve_next;
 	uint32_t ve_refcnt;
 	char pad[64 - sizeof (rwstlock_t) - 2 * sizeof (void *) - \
 	    sizeof (uint32_t)];
+#endif
 } vn_vfslocks_entry_t;
 
 /*
