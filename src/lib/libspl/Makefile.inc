@@ -45,6 +45,7 @@ libspl_la_SOURCES = \
 	lib/libspl/spl/thread.h
 	lib/libspl/spl/time.h \
 	lib/libspl/spl/types.h \
+	lib/libspl/spl/uio.h \
 	lib/libspl/spl/vfs.h \
 	lib/libspl/spl/vnode.h \
 	lib/libspl/spl/zone.h \

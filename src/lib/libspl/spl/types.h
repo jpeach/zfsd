@@ -46,6 +46,7 @@ typedef unsigned short ushort_t;
 typedef uint_t minor_t;
 typedef uint_t major_t;
 
+typedef off_t lloff_t;
 typedef off_t offset_t;
 typedef u_longlong_t u_offset_t;
 
