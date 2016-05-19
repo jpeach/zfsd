@@ -1,4 +1,3 @@
-
 /** @file
  *
  *  A brief file description
@@ -22,15 +21,17 @@
  *  limitations under the License.
  */
 
+#ifndef DOOR_H_8F5867B5_A3DC_4BBE_847D_7E45A14A355A
+#define DOOR_H_8F5867B5_A3DC_4BBE_847D_7E45A14A355A
 
-#ifndef SYSTM_H_A29C3BEE_3C36_48FB_8A73_F0FDBAB71EA1
-#define SYSTM_H_A29C3BEE_3C36_48FB_8A73_F0FDBAB71EA1
+#ifdef  __cplusplus
+extern "C" {
+#endif
 
-#include <spl/types.h>
-#include <spl/mutex.h>
-#include <spl/rwlock.h>
-#include <spl/condvar.h>
-#include <errno.h>
-#include <string.h>
+typedef struct door_handle * door_handle_t;
 
-#endif /* SYSTM_H_A29C3BEE_3C36_48FB_8A73_F0FDBAB71EA1 */
+#ifdef  __cplusplus
+}
+#endif
+
+#endif /* DOOR_H_8F5867B5_A3DC_4BBE_847D_7E45A14A355A */

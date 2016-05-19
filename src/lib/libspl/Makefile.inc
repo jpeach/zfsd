@@ -8,6 +8,7 @@ libspl_la_SOURCES = \
 	lib/libspl/cyclic.c \
 	lib/libspl/debug.c \
 	lib/libspl/fnvpair.c \
+	lib/libspl/kmem.c \
 	lib/libspl/list.c \
 	lib/libspl/nvpair.c \
 	lib/libspl/nvpair_alloc_fixed.c \
@@ -21,8 +22,13 @@ libspl_la_SOURCES = \
 	lib/libspl/spl/byteorder.h \
 	lib/libspl/spl/cmn_err.h \
 	lib/libspl/spl/condvar.h \
+	lib/libspl/spl/cred.h \
 	lib/libspl/spl/cyclic.h \
 	lib/libspl/spl/debug.h \
+	lib/libspl/spl/door.h \
+	lib/libspl/spl/idmap.h \
+	lib/libspl/spl/kidmap.h \
+	lib/libspl/spl/kmem.h \
 	lib/libspl/spl/list.h \
 	lib/libspl/spl/list_impl.h \
 	lib/libspl/spl/mutex.h \
@@ -30,11 +36,16 @@ libspl_la_SOURCES = \
 	lib/libspl/spl/nvpair_impl.h \
 	lib/libspl/spl/random.h \
 	lib/libspl/spl/rwlock.h \
+	lib/libspl/spl/sid.h \
 	lib/libspl/spl/sysevent.h \
 	lib/libspl/spl/sysmacros.h \
+	lib/libspl/spl/taskq.h \
+	lib/libspl/spl/taskq_impl.h \
+	lib/libspl/spl/thread.h
 	lib/libspl/spl/time.h \
 	lib/libspl/spl/types.h \
 	lib/libspl/spl/zone.h \
-	lib/libspl/taskq.c
+	lib/libspl/taskq.c \
+	lib/libspl/thread.c
 
 # vim: sw=8 ts=8 sts=8 noet ft=make:

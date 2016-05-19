@@ -1,4 +1,3 @@
-
 /** @file
  *
  *  A brief file description
@@ -22,15 +21,17 @@
  *  limitations under the License.
  */
 
+#ifndef CRED_H_53428638_1275_459E_9498_C1495F905F25
+#define CRED_H_53428638_1275_459E_9498_C1495F905F25
 
-#ifndef SYSTM_H_A29C3BEE_3C36_48FB_8A73_F0FDBAB71EA1
-#define SYSTM_H_A29C3BEE_3C36_48FB_8A73_F0FDBAB71EA1
+#ifdef  __cplusplus
+extern "C" {
+#endif
 
-#include <spl/types.h>
-#include <spl/mutex.h>
-#include <spl/rwlock.h>
-#include <spl/condvar.h>
-#include <errno.h>
-#include <string.h>
+typedef struct cred cred_t;
 
-#endif /* SYSTM_H_A29C3BEE_3C36_48FB_8A73_F0FDBAB71EA1 */
+#ifdef  __cplusplus
+}
+#endif
+
+#endif /* CRED_H_53428638_1275_459E_9498_C1495F905F25 */

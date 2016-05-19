@@ -23,14 +23,7 @@
  */
 
 
-#ifndef SYSTM_H_A29C3BEE_3C36_48FB_8A73_F0FDBAB71EA1
-#define SYSTM_H_A29C3BEE_3C36_48FB_8A73_F0FDBAB71EA1
+#ifndef TYPES32_H_37152A61_6587_41CE_B0DF_DA3AEADE9618
+#define TYPES32_H_37152A61_6587_41CE_B0DF_DA3AEADE9618
 
-#include <spl/types.h>
-#include <spl/mutex.h>
-#include <spl/rwlock.h>
-#include <spl/condvar.h>
-#include <errno.h>
-#include <string.h>
-
-#endif /* SYSTM_H_A29C3BEE_3C36_48FB_8A73_F0FDBAB71EA1 */
+#endif /* TYPES32_H_37152A61_6587_41CE_B0DF_DA3AEADE9618 */

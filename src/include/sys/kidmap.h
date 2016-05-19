@@ -23,14 +23,9 @@
  */
 
 
-#ifndef SYSTM_H_A29C3BEE_3C36_48FB_8A73_F0FDBAB71EA1
-#define SYSTM_H_A29C3BEE_3C36_48FB_8A73_F0FDBAB71EA1
+#ifndef KIDMAP_H_5DB9F7C4_8246_4A9E_AFE1_062A7557449D
+#define KIDMAP_H_5DB9F7C4_8246_4A9E_AFE1_062A7557449D
 
-#include <spl/types.h>
-#include <spl/mutex.h>
-#include <spl/rwlock.h>
-#include <spl/condvar.h>
-#include <errno.h>
-#include <string.h>
+#include <spl/kidmap.h>
 
-#endif /* SYSTM_H_A29C3BEE_3C36_48FB_8A73_F0FDBAB71EA1 */
+#endif /* KIDMAP_H_5DB9F7C4_8246_4A9E_AFE1_062A7557449D */

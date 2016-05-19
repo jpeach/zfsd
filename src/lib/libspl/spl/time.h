@@ -31,6 +31,9 @@
 extern "C" {
 #endif
 
+typedef struct timespec timestruc_t;
+typedef struct timespec timespec_t;
+
 // NOTE: clock_t comes from glibc and is defined to be __SYSCALL_SLONG_TYPE, so
 // at least on Linux x86_64 it ought to be a signed long.
 
