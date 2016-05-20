@@ -25,6 +25,7 @@ libspl_la_SOURCES = \
 	lib/libspl/spl/cred.h \
 	lib/libspl/spl/cyclic.h \
 	lib/libspl/spl/debug.h \
+	lib/libspl/spl/dkio.h \
 	lib/libspl/spl/door.h \
 	lib/libspl/spl/idmap.h \
 	lib/libspl/spl/kidmap.h \
