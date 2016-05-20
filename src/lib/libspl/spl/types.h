@@ -54,6 +54,7 @@ typedef uint64_t hrtime_t;
 
 typedef short pri_t;
 
+typedef struct page page_t;
 typedef struct vnode vnode_t;
 
 typedef int socket_t;
