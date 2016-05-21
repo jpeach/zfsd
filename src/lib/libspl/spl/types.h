@@ -34,6 +34,11 @@
 extern "C" {
 #endif
 
+// <spl/kstat.h> needs this to believe we have uint64_t.
+#if !defined(_KSTAT_TYPE)
+#define _INT64_TYPE
+#endif
+
 typedef enum { B_FALSE, B_TRUE } boolean_t;
 
 typedef unsigned long ulong_t;
