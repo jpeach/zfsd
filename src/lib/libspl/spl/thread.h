@@ -30,8 +30,10 @@
 extern "C" {
 #endif
 
+
 // A kthread is an opaque struct aliased to a pthread_t.
 typedef struct kthread kthread_t;
+typedef kthread_t * kthread_id_t ;
 
 // 0 is a valid pthread_t (pthread_self() returns it for the main
 // thread), so define a well-known invalid type.

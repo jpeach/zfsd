@@ -4,6 +4,8 @@ libspl_la_SOURCES = \
 	lib/libspl/avl.c \
 	lib/libspl/bitmap.c \
 	lib/libspl/bitmap_arch.c \
+	lib/libspl/callb.c \
+	lib/libspl/callb.c \
 	lib/libspl/condvar.c \
 	lib/libspl/cyclic.c \
 	lib/libspl/debug.c \
@@ -20,6 +22,7 @@ libspl_la_SOURCES = \
 	lib/libspl/spl/avl_impl.h \
 	lib/libspl/spl/bitmap.h \
 	lib/libspl/spl/byteorder.h \
+	lib/libspl/spl/callb.h \
 	lib/libspl/spl/cmn_err.h \
 	lib/libspl/spl/condvar.h \
 	lib/libspl/spl/cred.h \
