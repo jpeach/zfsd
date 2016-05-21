@@ -127,4 +127,10 @@ kmem_cache_reap_now(kmem_cache_t *cp)
     // Do nothing for now, since kmem_cache is just a malloc wrapper.
 }
 
+size_t vmem_size(vmem_t *vmp, int typemask)
+{
+    // XXX Parse /proc/meminfo to get memory stats.
+    return 0;
+}
+
 /* vim: set sts=4 sw=4 ts=4 tw=79 et: */

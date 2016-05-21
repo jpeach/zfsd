@@ -107,6 +107,18 @@ kmem_debugging() {
     return false;
 }
 
+/*
+ * Public segment types
+ */
+#define VMEM_ALLOC      0x01
+#define VMEM_FREE       0x02
+
+size_t vmem_size(vmem_t *vmp, int typemask);
+
+static inline void
+vmem_qcache_reap(vmem_t *vmp) {
+}
+
 #ifdef  __cplusplus
 }
 #endif
