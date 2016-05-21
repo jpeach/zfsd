@@ -3172,7 +3172,7 @@ arc_available_memory(void)
 	int64_t n;
 	free_memory_reason_t r = FMR_UNKNOWN;
 
-#ifdef _KERNEL
+#if defined(_KERNEL) && !defined(__zfsd__)
 	if (needfree > 0) {
 		n = PAGESIZE * (-needfree);
 		if (n < lowest) {
