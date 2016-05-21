@@ -138,6 +138,7 @@
 #endif
 #include <sys/callb.h>
 #include <sys/kstat.h>
+#include <sys/sdt.h>
 #include <zfs_fletcher.h>
 
 #ifndef _KERNEL
@@ -813,8 +814,8 @@ static arc_buf_hdr_t arc_eviction_hdr;
  * Other sizes
  */
 
-#define	HDR_FULL_SIZE ((int64_t)sizeof (arc_buf_hdr_t))
-#define	HDR_L2ONLY_SIZE ((int64_t)offsetof(arc_buf_hdr_t, b_l1hdr))
+#define	HDR_FULL_SIZE ((size_t)sizeof (arc_buf_hdr_t))
+#define	HDR_L2ONLY_SIZE ((size_t)offsetof(arc_buf_hdr_t, b_l1hdr))
 
 /*
  * Hash table routines
@@ -1112,7 +1113,7 @@ buf_fini(void)
  */
 /* ARGSUSED */
 static int
-hdr_full_cons(void *vbuf, void *unused, int kmflag)
+hdr_full_cons(void *vbuf, void *unused, unsigned kmflag)
 {
 	arc_buf_hdr_t *hdr = vbuf;
 
@@ -1128,7 +1129,7 @@ hdr_full_cons(void *vbuf, void *unused, int kmflag)
 
 /* ARGSUSED */
 static int
-hdr_l2only_cons(void *vbuf, void *unused, int kmflag)
+hdr_l2only_cons(void *vbuf, void *unused, unsigned kmflag)
 {
 	arc_buf_hdr_t *hdr = vbuf;
 
@@ -1140,7 +1141,7 @@ hdr_l2only_cons(void *vbuf, void *unused, int kmflag)
 
 /* ARGSUSED */
 static int
-buf_cons(void *vbuf, void *unused, int kmflag)
+buf_cons(void *vbuf, void *unused, unsigned kmflag)
 {
 	arc_buf_t *buf = vbuf;
 
@@ -1194,7 +1195,7 @@ buf_dest(void *vbuf, void *unused)
  */
 /* ARGSUSED */
 static void
-hdr_recl(void *unused)
+hdr_recl(void *unused, void *un)
 {
 	dprintf("hdr_recl called\n");
 	/*
@@ -5165,10 +5166,10 @@ arc_init(void)
 		kstat_install(arc_ksp);
 	}
 
-	(void) thread_create(NULL, 0, arc_reclaim_thread, NULL, 0, &p0,
+	(void) thread_create(NULL, 0, (kthread_proc_t)arc_reclaim_thread, NULL, 0, &p0,
 	    TS_RUN, minclsyspri);
 
-	(void) thread_create(NULL, 0, arc_user_evicts_thread, NULL, 0, &p0,
+	(void) thread_create(NULL, 0, (kthread_proc_t)arc_user_evicts_thread, NULL, 0, &p0,
 	    TS_RUN, minclsyspri);
 
 	arc_dead = FALSE;
@@ -6645,7 +6646,7 @@ l2arc_start(void)
 	if (!(spa_mode_global & FWRITE))
 		return;
 
-	(void) thread_create(NULL, 0, l2arc_feed_thread, NULL, 0, &p0,
+	(void) thread_create(NULL, 0, (kthread_proc_t)l2arc_feed_thread, NULL, 0, &p0,
 	    TS_RUN, minclsyspri);
 }
 

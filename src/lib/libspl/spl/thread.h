@@ -43,7 +43,7 @@ typedef kthread_t * kthread_id_t ;
 #define minclsyspri 60    /* minimum level of any system class */
 #define maxclsyspri 99    /* maximum level of any system class */
 
-typedef void * (*pthread_proc_t)(void *);
+typedef void * (*kthread_proc_t)(void *);
 
 static inline kthread_t *
 pthread_to_kthread(pthread_t threadid) {
@@ -60,7 +60,7 @@ kthread_to_pthread(kthread_t * threadid) {
 #define thread_create(stk, stksize, proc, arg, len, pp, state, pri) \
     thread_create_ex(proc, arg, #proc)
 
-kthread_t * thread_create_ex(pthread_proc_t proc, void *arg, const char * name);
+kthread_t * thread_create_ex(kthread_proc_t proc, void *arg, const char * name);
 void thread_join(kthread_t * thr);
 void thread_exit(void);
 

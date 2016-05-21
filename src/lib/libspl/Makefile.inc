@@ -41,6 +41,7 @@ libspl_la_SOURCES = \
 	lib/libspl/spl/nvpair_impl.h \
 	lib/libspl/spl/random.h \
 	lib/libspl/spl/rwlock.h \
+	lib/libspl/spl/sdt.h \
 	lib/libspl/spl/sid.h \
 	lib/libspl/spl/sysevent.h \
 	lib/libspl/spl/sysmacros.h \

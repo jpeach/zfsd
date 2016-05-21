@@ -1,4 +1,3 @@
-
 /** @file
  *
  *  A brief file description
@@ -22,10 +21,24 @@
  *  limitations under the License.
  */
 
+#ifndef SDT_H_896B5066_A65A_4BFE_9E50_8098BAE6D5BE
+#define SDT_H_896B5066_A65A_4BFE_9E50_8098BAE6D5BE
 
-#ifndef SEG_KMEM_H_B097E1B9_AA56_480B_AD5A_048681C55996
-#define SEG_KMEM_H_B097E1B9_AA56_480B_AD5A_048681C55996
+#ifdef  __cplusplus
+extern "C" {
+#endif
 
-#define zio_arena NULL
+#define DTRACE_PROBE(...)
+#define DTRACE_PROBE1(...)
+#define DTRACE_PROBE2(...)
+#define DTRACE_PROBE3(...)
+#define DTRACE_PROBE4(...)
+#define DTRACE_PROBE5(...)
 
-#endif /* SEG_KMEM_H_B097E1B9_AA56_480B_AD5A_048681C55996 */
+#define SET_ERROR(error) (error)
+
+#ifdef  __cplusplus
+}
+#endif
+
+#endif /* SDT_H_896B5066_A65A_4BFE_9E50_8098BAE6D5BE */

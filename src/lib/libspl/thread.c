@@ -33,7 +33,7 @@ thread_setname(kthread_t * thr, const char * name)
 }
 
 kthread_t *
-thread_create_ex(pthread_proc_t proc, void *arg, const char * name)
+thread_create_ex(kthread_proc_t proc, void *arg, const char * name)
 {
     pthread_t tid;
 
