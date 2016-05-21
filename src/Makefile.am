@@ -25,6 +25,7 @@ AM_CPPFLAGS = \
 	-I$(srcdir)/include \
 	-I$(srcdir)/fs/include \
 	-I$(srcdir)/fs/zfs \
+	-I$(srcdir)/fs/common \
 	-I$(srcdir)/lib/libnvpair \
 	-I$(srcdir)/lib/libspl
 
