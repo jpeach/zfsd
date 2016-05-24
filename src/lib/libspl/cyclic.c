@@ -22,6 +22,7 @@
  */
 
 #include <spl/types.h>
+#include <spl/time.h>
 #include <spl/cyclic.h>
 
 /* See spa_add() for cyclic timer usage ... */

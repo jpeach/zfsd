@@ -30,7 +30,6 @@
 extern "C" {
 #endif
 
-
 // A kthread is an opaque struct aliased to a pthread_t.
 typedef struct kthread kthread_t;
 typedef kthread_t * kthread_id_t ;
@@ -66,6 +65,9 @@ void thread_exit(void);
 
 void thread_setname(kthread_t * thr, const char * name);
 pid_t thread_gettid();
+
+#define max_ncpus       (sysconf(_SC_NPROCESSORS_CONF))
+#define boot_ncpus      (sysconf(_SC_NPROCESSORS_ONLN))
 
 #ifdef  __cplusplus
 }

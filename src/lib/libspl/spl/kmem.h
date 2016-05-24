@@ -113,11 +113,22 @@ kmem_debugging() {
 #define VMEM_ALLOC      0x01
 #define VMEM_FREE       0x02
 
+extern vmem_t *heap_arena;     /* primary kernel heap arena */
+
 size_t vmem_size(vmem_t *vmp, int typemask);
 
 static inline void
 vmem_qcache_reap(vmem_t *vmp) {
 }
+
+// Pages to bytes.
+static inline size_t
+ptob(unsigned pages) {
+    return pages * getpagesize();
+}
+
+#define PAGESIZE getpagesize()
+#define physmem sysconf(_SC_PHYS_PAGES)
 
 #ifdef  __cplusplus
 }

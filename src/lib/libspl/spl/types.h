@@ -55,8 +55,6 @@ typedef off_t lloff_t;
 typedef off_t offset_t;
 typedef u_longlong_t u_offset_t;
 
-typedef uint64_t hrtime_t;
-
 typedef short pri_t;
 
 typedef struct page page_t;

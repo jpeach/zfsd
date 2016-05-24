@@ -25,6 +25,7 @@
 #define CONDVAR_H_2A7129A3_8BA3_446C_B60D_3E483FBBCA50
 
 #include <spl/thread.h>
+#include <spl/time.h>
 
 #ifdef  __cplusplus
 extern "C" {
@@ -60,6 +61,7 @@ cv_broadcast(kcondvar_t * cv) {
 
 void cv_wait(kcondvar_t * cv, kmutex_t * m);
 clock_t cv_timedwait(kcondvar_t * cv, kmutex_t * m, clock_t timeout);
+clock_t cv_timedwait_hires(kcondvar_t * cv, kmutex_t * m, hrtime_t timeout, hrtime_t resolution, int flag);
 
 #ifdef  __cplusplus
 }

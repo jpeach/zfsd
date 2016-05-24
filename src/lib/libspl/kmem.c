@@ -28,6 +28,8 @@ struct vmem
 {
 };
 
+vmem_t *heap_arena = (vmem_t *)(uintptr_t)0x68656170; // 'h' 'e' 'a' 'p'
+
 struct kmem_cache
 {
     size_t              km_objsize;
@@ -129,8 +131,21 @@ kmem_cache_reap_now(kmem_cache_t *cp)
 
 size_t vmem_size(vmem_t *vmp, int typemask)
 {
-    // XXX Parse /proc/meminfo to get memory stats.
-    return 0;
+    size_t pages = 0;
+
+    VERIFY3(vmp, ==, heap_arena);
+
+    // Approximate free memory.
+    if (typemask & VMEM_FREE) {
+        pages += sysconf(_SC_AVPHYS_PAGES);
+    }
+
+    // Approximate allocated memory.
+    if (typemask & VMEM_ALLOC) {
+        pages += (sysconf(_SC_PHYS_PAGES) - sysconf(_SC_AVPHYS_PAGES));
+    }
+
+    return ptob(pages);
 }
 
 /* vim: set sts=4 sw=4 ts=4 tw=79 et: */

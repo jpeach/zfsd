@@ -3388,7 +3388,7 @@ arc_reclaim_thread(void)
 			int64_t to_free =
 			    (arc_c >> arc_shrink_shift) - free_memory;
 			if (to_free > 0) {
-#ifdef _KERNEL
+#if defined(_KERNEL) && !defined(__zfsd__)
 				to_free = MAX(to_free, ptob(needfree));
 #endif
 				arc_shrink(to_free);
@@ -4820,7 +4820,7 @@ arc_write(zio_t *pio, spa_t *spa, uint64_t txg,
 static int
 arc_memory_throttle(uint64_t reserve, uint64_t txg)
 {
-#ifdef _KERNEL
+#if defined(_KERNEL) && !defined(__zfsd__)
 	uint64_t available_memory = ptob(freemem);
 	static uint64_t page_load = 0;
 	static uint64_t last_txg = 0;
@@ -4998,7 +4998,7 @@ arc_init(void)
 	/*
 	 * allmem is "all memory that we could possibly use".
 	 */
-#ifdef _KERNEL
+#if defined(_KERNEL) && !defined(__zfsd__)
 	uint64_t allmem = ptob(physmem - swapfs_minfree);
 #else
 	uint64_t allmem = (physmem * PAGESIZE) / 2;

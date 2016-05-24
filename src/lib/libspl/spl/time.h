@@ -34,6 +34,9 @@ extern "C" {
 typedef struct timespec timestruc_t;
 typedef struct timespec timespec_t;
 
+// Time in nanoseconds.
+typedef uint64_t hrtime_t;
+
 // NOTE: clock_t comes from glibc and is defined to be __SYSCALL_SLONG_TYPE, so
 // at least on Linux x86_64 it ought to be a signed long.
 
@@ -56,6 +59,9 @@ typedef struct timespec timespec_t;
 #define SEC_TO_NSEC(sec)    ((sec) * NSEC_PER_SEC)
 #define NSEC_TO_SEC(nsec)   ((nsec) / NSEC_PER_SEC)
 
+#define MSEC2NSEC(msec)     ((msec) * NSEC_PER_MSEC)
+#define SEC2NSEC(sec)	    SEC_TO_NSEC(sec)
+
 // ddi_get_lbolt() returns usec, so (logical) clock ticks are in
 // usec. That means hz is USEC.
 #define hz USEC_PER_SEC
@@ -65,6 +71,16 @@ static inline clock_t ddi_get_lbolt(void) {
     struct timespec ts;
     clock_gettime(CLOCK_BOOTTIME, &ts);
     return SEC_TO_USEC(ts.tv_sec) + NSEC_TO_USEC(ts.tv_nsec);
+}
+
+// The gethrtime() function returns the current high-resolution real
+// time.  Time is expressed as nanoseconds since some arbitrary time
+// in the past.
+static inline hrtime_t
+gethrtime() {
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC_COARSE, &ts);
+    return SEC_TO_NSEC(ts.tv_sec) + ts.tv_nsec;
 }
 
 #ifdef  __cplusplus

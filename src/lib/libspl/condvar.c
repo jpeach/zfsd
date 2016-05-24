@@ -75,4 +75,19 @@ clock_t cv_timedwait(kcondvar_t * cv, kmutex_t * m, clock_t timeout)
     }
 }
 
+// Unlike cv_timedwait(), this timeout is relative to now.
+clock_t cv_timedwait_hires(
+        kcondvar_t * cv, kmutex_t * m, hrtime_t timeout, hrtime_t resolution, int flag)
+{
+    VERIFY0(flag); // We don't support flags.
+    clock_t expiration = ddi_get_lbolt() + timeout;;
+
+    if (resolution > 1) {
+        expiration = (expiration / resolution) * resolution;
+    }
+
+    // clock_t is ticks (usec) and hrtime_t is nsec.
+    return cv_timedwait(cv, m, USEC_TO_NSEC(expiration));
+}
+
 /* vim: set sts=4 sw=4 ts=4 tw=79 et: */
