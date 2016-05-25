@@ -30,6 +30,9 @@ extern "C" {
 
 typedef struct cred cred_t;
 
+// A well-known handle to the current thread credential.
+#define CRED() ((cred_t *)(uintptr_t)(-1))
+
 #ifdef  __cplusplus
 }
 #endif
