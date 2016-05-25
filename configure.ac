@@ -42,6 +42,8 @@ AS_CASE($ax_cv_c_compiler_vendor,
 AS_IF([test "x$enable_debug" != "xyes"], [
     AX_APPEND_FLAG([-DNDEBUG=1], [CPPFLAGS])
 ], [
+    # DEBUG=1 has the size-effecto of turning on ZFS_DEBUG.
+    AX_APPEND_FLAG([-DDEBUG=1], [CPPFLAGS])
     # Remove autoconf's default optimizations.
     ZFSD_REMOVE_COMPILE_FLAGS([C C++], [-O2])
     ZFSD_APPEND_COMPILE_FLAGS([C C++], [-O0])
