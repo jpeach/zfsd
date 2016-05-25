@@ -88,8 +88,6 @@ MUTEX_NOT_HELD(const kmutex_t *m) {
     return !MUTEX_HELD(m);
 }
 
-#define MUTEX_NOT_HELD(x)
-
 #ifdef  __cplusplus
 }
 #endif
