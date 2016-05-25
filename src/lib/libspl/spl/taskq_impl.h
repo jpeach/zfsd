@@ -29,13 +29,11 @@
 #ifndef	_SYS_TASKQ_IMPL_H
 #define	_SYS_TASKQ_IMPL_H
 
-#if !defined(__zfsd__)
 #include <sys/taskq.h>
 #include <sys/inttypes.h>
 #include <sys/vmem.h>
 #include <sys/list.h>
 #include <sys/kstat.h>
-#endif
 
 #ifdef	__cplusplus
 extern "C" {
