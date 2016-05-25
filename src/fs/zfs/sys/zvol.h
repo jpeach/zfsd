@@ -35,7 +35,7 @@ extern "C" {
 #define	ZVOL_OBJ		1ULL
 #define	ZVOL_ZAP_OBJ		2ULL
 
-#ifdef _KERNEL
+#if defined(_KERNEL) && !defined(__zfsd__)
 extern int zvol_check_volsize(uint64_t volsize, uint64_t blocksize);
 extern int zvol_check_volblocksize(uint64_t volblocksize);
 extern int zvol_get_stats(objset_t *os, nvlist_t *nv);
