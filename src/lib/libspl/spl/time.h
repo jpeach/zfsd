@@ -83,6 +83,17 @@ gethrtime() {
     return SEC_TO_NSEC(ts.tv_sec) + ts.tv_nsec;
 }
 
+// Wait the given number of ticks (usec).
+void delay(clock_t ticks)
+{
+    timespec_t timeout = {
+        .tv_sec = (typeof(timeout.tv_sec))USEC_TO_SEC(ticks),
+        .tv_nsec = (typeof(timeout.tv_nsec))USEC_TO_NSEC(ticks % USEC_PER_SEC),
+    };
+
+    nanosleep(&timeout, NULL);
+}
+
 #ifdef  __cplusplus
 }
 #endif
