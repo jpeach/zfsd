@@ -102,6 +102,10 @@ void    kmem_cache_free(kmem_cache_t *cp, void *ptr);
 void	kmem_cache_set_move(kmem_cache_t *cp, kmem_move_t mv);
 void 	kmem_cache_reap_now(kmem_cache_t *cp);
 
+/* From uts/common/sys/kmem.h ... */
+#define POINTER_IS_VALID(p)     (!((uintptr_t)(p) & 0x3))
+#define POINTER_INVALIDATE(pp)  (*(pp) = (void *)((uintptr_t)(*(pp)) | 0x1))
+
 static inline bool
 kmem_debugging() {
     return false;
