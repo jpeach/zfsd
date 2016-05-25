@@ -1,4 +1,3 @@
-
 /** @file
  *
  *  A brief file description
@@ -22,18 +21,18 @@
  *  limitations under the License.
  */
 
+#ifndef STRING_H_18C1E608_A7C5_4867_AC00_826231B5EE0F
+#define STRING_H_18C1E608_A7C5_4867_AC00_826231B5EE0F
 
-#ifndef SYSTM_H_A29C3BEE_3C36_48FB_8A73_F0FDBAB71EA1
-#define SYSTM_H_A29C3BEE_3C36_48FB_8A73_F0FDBAB71EA1
+#ifdef  __cplusplus
+extern "C" {
+#endif
 
-#include <spl/types.h>
-#include <spl/mutex.h>
-#include <spl/rwlock.h>
-#include <spl/condvar.h>
-#include <spl/file.h>
-#include <spl/string.h>
-#include <spl/sdt.h>
-#include <errno.h>
-#include <string.h>
+size_t strlcat(char *dst, const char *src, size_t dstsize);
+size_t strlcpy(char *dst, const char *src, size_t len);
 
-#endif /* SYSTM_H_A29C3BEE_3C36_48FB_8A73_F0FDBAB71EA1 */
+#ifdef  __cplusplus
+}
+#endif
+
+#endif /* STRING_H_18C1E608_A7C5_4867_AC00_826231B5EE0F */

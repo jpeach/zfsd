@@ -5,7 +5,6 @@ libspl_la_SOURCES = \
 	lib/libspl/bitmap.c \
 	lib/libspl/bitmap_arch.c \
 	lib/libspl/callb.c \
-	lib/libspl/callb.c \
 	lib/libspl/condvar.c \
 	lib/libspl/cyclic.c \
 	lib/libspl/debug.c \
@@ -55,6 +54,7 @@ libspl_la_SOURCES = \
 	lib/libspl/spl/vfs.h \
 	lib/libspl/spl/vnode.h \
 	lib/libspl/spl/zone.h \
+	lib/libspl/string.c \
 	lib/libspl/taskq.c \
 	lib/libspl/thread.c
 
