@@ -1091,7 +1091,9 @@ dmu_tx_delay(dmu_tx_t *tx, uint64_t dirty)
 	dp->dp_last_wakeup = wakeup;
 	mutex_exit(&dp->dp_lock);
 
-#ifdef _KERNEL
+	// ZFSD threads don't have a t_delay_lock member, so take the
+	// userland compatibility path here.
+#if defined(_KERNEL) && !defined(__zfsd__)
 	mutex_enter(&curthread->t_delay_lock);
 	while (cv_timedwait_hires(&curthread->t_delay_cv,
 	    &curthread->t_delay_lock, wakeup, zfs_delay_resolution_ns,
