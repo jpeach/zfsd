@@ -102,11 +102,11 @@ typedef enum uio_seg { UIO_USERSPACE, UIO_SYSSPACE, UIO_USERISPACE } uio_seg_t;
 typedef struct uio {
 	iovec_t		*uio_iov;	/* pointer to array of iovecs */
 	int		uio_iovcnt;	/* number of iovecs */
-	lloff_t		_uio_offset;	/* file offset */
+	lloff_t		uio_loffset;	/* file offset */
 	uio_seg_t	uio_segflg;	/* address space (kernel or user) */
 	uint16_t	uio_fmode;	/* file mode flags */
 	uint16_t	uio_extflg;	/* extended flags */
-	lloff_t		_uio_limit;	/* u-limit (maximum byte offset) */
+	lloff_t		uio_llimit;	/* u-limit (maximum byte offset) */
 	ssize_t		uio_resid;	/* residual count */
 } uio_t;
 
@@ -128,11 +128,11 @@ typedef struct uioa_page_s {		/* locked uio_iov state */
 typedef struct uioa_s {
 	iovec_t		*uio_iov;	/* pointer to array of iovecs */
 	int		uio_iovcnt;	/* number of iovecs */
-	lloff_t		_uio_offset;	/* file offset */
+	lloff_t		uio_offset;	/* file offset */
 	uio_seg_t	uio_segflg;	/* address space (kernel or user) */
 	uint16_t	uio_fmode;	/* file mode flags */
 	uint16_t	uio_extflg;	/* extended flags */
-	lloff_t		_uio_limit;	/* u-limit (maximum byte offset) */
+	lloff_t		uio_llimit;	/* u-limit (maximum byte offset) */
 	ssize_t		uio_resid;	/* residual count */
 	/*
 	 * uioa extended members.
@@ -196,20 +196,6 @@ typedef struct xuio {
 #define	UIOA_CLR	(~0x000F)	/* clear mutually exclusive bits */
 
 #define	UIOA_POLL	0x0010		/* need dcopy_poll() */
-
-#define	uio_loffset	_uio_offset._f
-#if !defined(_LP64)
-#define	uio_offset	_uio_offset._p._l
-#else
-#define	uio_offset	uio_loffset
-#endif
-
-#define	uio_llimit	_uio_limit._f
-#if !defined(_LP64)
-#define	uio_limit	_uio_limit._p._l
-#else
-#define	uio_limit	uio_llimit
-#endif
 
 /*
  * I/O direction.
