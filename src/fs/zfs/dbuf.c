@@ -69,7 +69,7 @@ static taskq_t *dbu_evict_taskq;
 
 /* ARGSUSED */
 static int
-dbuf_cons(void *vdb, void *unused, int kmflag)
+dbuf_cons(void *vdb, void *unused, unsigned kmflag)
 {
 	dmu_buf_impl_t *db = vdb;
 	bzero(db, sizeof (dmu_buf_impl_t));
