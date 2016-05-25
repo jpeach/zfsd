@@ -1028,7 +1028,6 @@ xuio_stat_wbuf_nocopy()
 	XUIOSTAT_BUMP(xuiostat_wbuf_nocopy);
 }
 
-#ifdef _KERNEL
 static int
 dmu_read_uio_dnode(dnode_t *dn, uio_t *uio, uint64_t size)
 {
@@ -1244,6 +1243,7 @@ dmu_write_uio(objset_t *os, uint64_t object, uio_t *uio, uint64_t size,
 	return (err);
 }
 
+#if defined(_KERNEL) && !defined(__zfsd__)
 int
 dmu_write_pages(objset_t *os, uint64_t object, uint64_t offset, uint64_t size,
     page_t *pp, dmu_tx_t *tx)
