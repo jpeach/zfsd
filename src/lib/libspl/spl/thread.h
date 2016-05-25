@@ -54,7 +54,10 @@ kthread_to_pthread(kthread_t * threadid) {
     return (pthread_t)((uintptr_t)threadid);
 }
 
-#define curthread ({ pthread_to_kthread(pthread_self()); })
+extern struct proc p0;
+
+#define curthread 	({ pthread_to_kthread(pthread_self()); })
+#define curproc 	({ &p0; })
 
 #define thread_create(stk, stksize, proc, arg, len, pp, state, pri) \
     thread_create_ex(proc, arg, #proc)

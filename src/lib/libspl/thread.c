@@ -24,6 +24,8 @@
 #include <spl/types.h>
 #include <spl/thread.h>
 
+struct proc p0;
+
 void
 thread_setname(kthread_t * thr, const char * name)
 {
