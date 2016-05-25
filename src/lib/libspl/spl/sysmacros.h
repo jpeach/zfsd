@@ -151,6 +151,8 @@ extern "C" {
 #define P2SAMEHIGHBIT_TYPED(x, y, type) \
         (((type)(x) ^ (type)(y)) < ((type)(x) & (type)(y)))
 
+#define issig(x) (false)
+
 #ifdef  __cplusplus
 }
 #endif
