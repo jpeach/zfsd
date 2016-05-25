@@ -31,6 +31,7 @@
 #include <spl/rwlock.h>
 #include <spl/condvar.h>
 #include <spl/file.h>
+#include <spl/sdt.h>
 #include <errno.h>
 #include <string.h>
 
