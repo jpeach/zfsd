@@ -50,12 +50,15 @@ libspl_la_SOURCES = \
 	lib/libspl/spl/thread.h
 	lib/libspl/spl/time.h \
 	lib/libspl/spl/types.h \
+	lib/libspl/spl/u8_textprep.h \
+	lib/libspl/spl/u8_textprep_data.h \
 	lib/libspl/spl/uio.h \
 	lib/libspl/spl/vfs.h \
 	lib/libspl/spl/vnode.h \
 	lib/libspl/spl/zone.h \
 	lib/libspl/string.c \
 	lib/libspl/taskq.c \
-	lib/libspl/thread.c
+	lib/libspl/thread.c \
+	lib/libspl/u8_textprep.c
 
 # vim: sw=8 ts=8 sts=8 noet ft=make:

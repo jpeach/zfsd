@@ -23,18 +23,9 @@
  */
 
 
-#ifndef SYSTM_H_A29C3BEE_3C36_48FB_8A73_F0FDBAB71EA1
-#define SYSTM_H_A29C3BEE_3C36_48FB_8A73_F0FDBAB71EA1
+#ifndef U8_TEXTPREP_DATA_H_468785BB_ADB0_4768_8322_383A49324622
+#define U8_TEXTPREP_DATA_H_468785BB_ADB0_4768_8322_383A49324622
 
-#include <spl/types.h>
-#include <spl/mutex.h>
-#include <spl/rwlock.h>
-#include <spl/condvar.h>
-#include <spl/file.h>
-#include <spl/string.h>
-#include <spl/sdt.h>
-#include <spl/u8_textprep.h>
-#include <errno.h>
-#include <string.h>
+#include <spl/u8_textprep_data.h>
 
-#endif /* SYSTM_H_A29C3BEE_3C36_48FB_8A73_F0FDBAB71EA1 */
+#endif /* U8_TEXTPREP_DATA_H_468785BB_ADB0_4768_8322_383A49324622 */
