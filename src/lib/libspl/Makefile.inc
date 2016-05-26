@@ -6,6 +6,7 @@ libspl_la_SOURCES = \
 	lib/libspl/bitmap_arch.c \
 	lib/libspl/callb.c \
 	lib/libspl/condvar.c \
+	lib/libspl/cred.c \
 	lib/libspl/cyclic.c \
 	lib/libspl/debug.c \
 	lib/libspl/fnvpair.c \

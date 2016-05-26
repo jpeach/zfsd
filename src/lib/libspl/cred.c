@@ -21,23 +21,12 @@
  *  limitations under the License.
  */
 
-#ifndef CRED_H_53428638_1275_459E_9498_C1495F905F25
-#define CRED_H_53428638_1275_459E_9498_C1495F905F25
+#include <spl/types.h>
+#include <spl/cred.h>
 
-#ifdef  __cplusplus
-extern "C" {
-#endif
+struct cred{};
 
-typedef struct cred cred_t;
+static struct cred cred0;
+struct cred *kcred = &cred0;
 
-// A well-known handle to the current thread credential.
-#define CRED() ((cred_t *)(uintptr_t)(-1))
-
-// Fully privileged credential (ie. superuser).
-extern struct cred *kcred;
-
-#ifdef  __cplusplus
-}
-#endif
-
-#endif /* CRED_H_53428638_1275_459E_9498_C1495F905F25 */
+/* vim: set sts=4 sw=4 ts=4 tw=79 et: */
