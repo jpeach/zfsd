@@ -83,6 +83,11 @@ gethrtime() {
     return SEC_TO_NSEC(ts.tv_sec) + ts.tv_nsec;
 }
 
+static inline time_t
+gethrestime_sec() {
+    return NSEC_TO_SEC(gethrtime());
+}
+
 // Wait the given number of ticks (usec).
 void delay(clock_t ticks)
 {
