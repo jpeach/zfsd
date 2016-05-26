@@ -60,6 +60,8 @@ typedef uint64_t hrtime_t;
 #define NSEC_TO_SEC(nsec)   ((nsec) / NSEC_PER_SEC)
 
 #define MSEC2NSEC(msec)     ((msec) * NSEC_PER_MSEC)
+#define NSEC2MSEC(nsec)     ((nsec) / NSEC_PER_MSEC)
+
 #define SEC2NSEC(sec)	    SEC_TO_NSEC(sec)
 
 // ddi_get_lbolt() returns usec, so (logical) clock ticks are in
@@ -73,6 +75,8 @@ ddi_get_lbolt(void) {
     clock_gettime(CLOCK_BOOTTIME, &ts);
     return SEC_TO_USEC(ts.tv_sec) + NSEC_TO_USEC(ts.tv_nsec);
 }
+
+#define ddi_get_lbolt64() ddi_get_lbolt()
 
 // The gethrtime() function returns the current high-resolution real
 // time.  Time is expressed as nanoseconds since some arbitrary time

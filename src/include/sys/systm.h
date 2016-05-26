@@ -32,6 +32,7 @@
 #include <spl/condvar.h>
 #include <spl/file.h>
 #include <spl/string.h>
+#include <spl/time.h>
 #include <spl/sdt.h>
 #include <spl/u8_textprep.h>
 #include <errno.h>
