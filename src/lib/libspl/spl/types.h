@@ -59,6 +59,8 @@ typedef short pri_t;
 
 typedef struct page page_t;
 typedef struct vnode vnode_t;
+typedef struct vattr vattr_t;
+typedef struct xvattr xvattr_t;
 
 typedef int socket_t;
 
