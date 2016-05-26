@@ -67,7 +67,8 @@ typedef uint64_t hrtime_t;
 #define hz USEC_PER_SEC
 
 /* Get current uptime (logical ticks) in usec. */
-static inline clock_t ddi_get_lbolt(void) {
+static inline clock_t
+ddi_get_lbolt(void) {
     struct timespec ts;
     clock_gettime(CLOCK_BOOTTIME, &ts);
     return SEC_TO_USEC(ts.tv_sec) + NSEC_TO_USEC(ts.tv_nsec);
@@ -89,7 +90,8 @@ gethrestime_sec() {
 }
 
 // Wait the given number of ticks (usec).
-void delay(clock_t ticks)
+static inline void
+delay(clock_t ticks)
 {
     timespec_t timeout = {
         .tv_sec = (typeof(timeout.tv_sec))USEC_TO_SEC(ticks),
