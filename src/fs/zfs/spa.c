@@ -82,6 +82,10 @@
 #include "zfs_prop.h"
 #include "zfs_comutil.h"
 
+#if defined(__zfsd__)
+#define PS_NONE         -1
+#endif
+
 /*
  * The interval, in seconds, at which failed configuration cache file writes
  * should be retried.
@@ -971,7 +975,7 @@ spa_create_zio_taskqs(spa_t *spa)
 	}
 }
 
-#ifdef _KERNEL
+#if defined(_KERNEL) && !defined(__zfsd__)
 static void
 spa_thread(void *arg)
 {
@@ -1061,6 +1065,7 @@ spa_activate(spa_t *spa, int mode)
 	ASSERT(spa->spa_proc == &p0);
 	spa->spa_did = 0;
 
+#if !defined(__zfsd__)
 	/* Only create a process if we're going to be around a while. */
 	if (spa_create_process && strcmp(spa->spa_name, TRYIMPORT_NAME) != 0) {
 		if (newproc(spa_thread, (caddr_t)spa, syscid, maxclsyspri,
@@ -1081,6 +1086,8 @@ spa_activate(spa_t *spa, int mode)
 #endif
 		}
 	}
+#endif /* !defined(__zfsd__) */
+
 	mutex_exit(&spa->spa_proc_lock);
 
 	/* If we didn't create a process, we need to create our taskqs. */
@@ -1164,6 +1171,13 @@ spa_deactivate(spa_t *spa)
 	ASSERT(spa->spa_proc == &p0);
 	mutex_exit(&spa->spa_proc_lock);
 
+#if defined(__zfsd__)
+	// ZFSD doesn't create the SPA thread, so we should not have
+	// to join it.
+	VERIFY3(spa->spa_did, ==, 0);
+
+#else
+
 	/*
 	 * We want to make sure spa_thread() has actually exited the ZFS
 	 * module, so that the module can't be unloaded out from underneath
@@ -1173,6 +1187,7 @@ spa_deactivate(spa_t *spa)
 		thread_join(spa->spa_did);
 		spa->spa_did = 0;
 	}
+#endif /* defined(__zfsd__) */
 }
 
 /*
@@ -5814,6 +5829,7 @@ spa_async_autoexpand(spa_t *spa, vdev_t *vd)
 	if (!vd->vdev_ops->vdev_op_leaf || vd->vdev_physpath == NULL)
 		return;
 
+#if !defined(__zfsd__)
 	physpath = kmem_zalloc(MAXPATHLEN, KM_SLEEP);
 	(void) snprintf(physpath, MAXPATHLEN, "/devices%s", vd->vdev_physpath);
 
@@ -5825,6 +5841,7 @@ spa_async_autoexpand(spa_t *spa, vdev_t *vd)
 
 	nvlist_free(attr);
 	kmem_free(physpath, MAXPATHLEN);
+#endif
 }
 
 static void

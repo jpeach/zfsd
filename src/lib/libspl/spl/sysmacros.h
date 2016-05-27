@@ -153,6 +153,9 @@ extern "C" {
 
 #define issig(x) (false)
 
+// Root vnode for the SPA.
+#define rootdir ((vnode_t *)(uintptr_t)1)
+
 #ifdef  __cplusplus
 }
 #endif
