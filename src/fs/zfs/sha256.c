@@ -27,19 +27,34 @@
  */
 #include <sys/zfs_context.h>
 #include <sys/zio.h>
+#if defined(__zfsd__)
+#include <openssl/sha.h>
+#else
 #include <sys/sha2.h>
+#endif /* defined(__zfsd__) */
 
 /*ARGSUSED*/
 void
 zio_checksum_SHA256(const void *buf, uint64_t size,
     const void *ctx_template, zio_cksum_t *zcp)
 {
+#if defined(__zfsd__)
+	SHA256_CTX ctx;
+	zio_cksum_t tmp;
+
+	SHA256_Init(&ctx);
+	SHA256_Update(&ctx, buf, size);
+	SHA256_Final((uint8_t *)&tmp, &ctx);
+
+	CTASSERT(sizeof(zio_cksum_t) == SHA256_DIGEST_LENGTH);
+#else
 	SHA2_CTX ctx;
 	zio_cksum_t tmp;
 
 	SHA2Init(SHA256, &ctx);
 	SHA2Update(&ctx, buf, size);
 	SHA2Final(&tmp, &ctx);
+#endif /* defined(__zfsd__) */
 
 	/*
 	 * A prior implementation of this function had a
@@ -59,11 +74,35 @@ void
 zio_checksum_SHA512_native(const void *buf, uint64_t size,
     const void *ctx_template, zio_cksum_t *zcp)
 {
+#if defined(__zfsd__)
+	SHA512_CTX ctx;
+	union {
+		struct {
+			zio_cksum_t first;
+			zio_cksum_t second;
+		} digest;
+		uint8_t bytes[SHA512_DIGEST_LENGTH];
+	} digest;
+
+	SHA512_Init(&ctx);
+	SHA512_Update(&ctx, buf, size);
+	SHA512_Final(digest.bytes, &ctx);
+
+	CTASSERT(sizeof(digest) == SHA512_DIGEST_LENGTH);
+
+	/* XXX True SHA 512/256 changes the initialization vector as
+	 * well as truncating the result. AFAICT OpenSSL does not support
+	 * this, so until then this would result in an incompatible on-disk
+	 * checksum.
+	 */
+	*zcp = digest.digest.second;
+#else
 	SHA2_CTX	ctx;
 
 	SHA2Init(SHA512_256, &ctx);
 	SHA2Update(&ctx, buf, size);
 	SHA2Final(zcp, &ctx);
+#endif /* defined(__zfsd__) */
 }
 
 /*ARGSUSED*/
