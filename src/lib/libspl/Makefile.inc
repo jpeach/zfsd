@@ -62,10 +62,12 @@ libspl_la_SOURCES = \
 	lib/libspl/spl/uio.h \
 	lib/libspl/spl/vfs.h \
 	lib/libspl/spl/vnode.h \
+	lib/libspl/spl/zmod.h \
 	lib/libspl/spl/zone.h \
 	lib/libspl/string.c \
 	lib/libspl/taskq.c \
 	lib/libspl/thread.c \
-	lib/libspl/u8_textprep.c
+	lib/libspl/u8_textprep.c \
+	lib/libspl/zmod.c
 
 # vim: sw=8 ts=8 sts=8 noet ft=make:
