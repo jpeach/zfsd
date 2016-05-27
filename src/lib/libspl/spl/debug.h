@@ -46,6 +46,8 @@ extern void __assert_fail (const char *__assertion, const char *__file,
 #define ASSERT3S(lhs, op, rhs)  assert( (lhs) op (rhs) )
 #define ASSERT0(expr)           assert( (expr) == 0 )
 
+#define CTASSERT(expr) static_assert(expr, "")
+
 #define VERIFY(expr) do { \
     typeof(expr) _r = (expr); \
     if (!(_r))  { \

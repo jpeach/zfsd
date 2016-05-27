@@ -9,6 +9,8 @@ libspl_la_SOURCES = \
 	lib/libspl/cred.c \
 	lib/libspl/cyclic.c \
 	lib/libspl/debug.c \
+	lib/libspl/edonr.c \
+	lib/libspl/edonr_byteorder.h \
 	lib/libspl/fnvpair.c \
 	lib/libspl/kmem.c \
 	lib/libspl/list.c \
@@ -31,6 +33,7 @@ libspl_la_SOURCES = \
 	lib/libspl/spl/debug.h \
 	lib/libspl/spl/dkio.h \
 	lib/libspl/spl/door.h \
+	lib/libspl/spl/edonr.h \
 	lib/libspl/spl/eventdefs.h \
 	lib/libspl/spl/file.h \
 	lib/libspl/spl/idmap.h \
