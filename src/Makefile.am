@@ -27,9 +27,11 @@ AM_CPPFLAGS = \
 	-I$(srcdir)/fs/zfs \
 	-I$(srcdir)/fs/common \
 	-I$(srcdir)/lib/libnvpair \
-	-I$(srcdir)/lib/libspl
+	-I$(srcdir)/lib/libspl \
+	-I$(srcdir)/lib/libskein
 
 include lib/libnvpair/Makefile.inc
+include lib/libskein/Makefile.inc
 include lib/libspl/Makefile.inc
 include fs/Makefile.inc
 include tests/Makefile.inc
