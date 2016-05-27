@@ -1,4 +1,5 @@
 EXTRA_DIST += \
+	fs/include \
 	fs/zfs/THIRDPARTYLICENSE.lz4 \
 	fs/zfs/THIRDPARTYLICENSE.lz4.descrip
 
