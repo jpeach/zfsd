@@ -67,6 +67,13 @@ static uint64_t spa_config_generation = 1;
  */
 const char *spa_config_path = ZPOOL_CACHE;
 
+#if defined(__zfsd__)
+
+int spa_config_write(spa_config_dirent_t *dp, nvlist_t *nvl);
+void spa_config_load(void);
+
+#else /* defined(__zfsd__) */
+
 /*
  * Called when the module is first loaded, this routine loads the configuration
  * file into the SPA namespace.  It does not actually open or load the pools; it
@@ -190,6 +197,8 @@ spa_config_write(spa_config_dirent_t *dp, nvlist_t *nvl)
 	kmem_free(temp, MAXPATHLEN);
 	return (err);
 }
+
+#endif /* defined(__zfsd__) */
 
 /*
  * Synchronize pool configuration to disk.  This must be called with the

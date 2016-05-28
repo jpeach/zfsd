@@ -170,6 +170,9 @@ libzfs_la_SOURCES = \
 	fs/zfs/zle.c \
 	fs/zfs/zrlock.c
 
+libzfs_la_SOURCES += \
+	fs/compat/spa_config.c
+
 libzfs_la_NOTYET =  \
 	fs/zfs/dmu_diff.c \
 	fs/zfs/vdev_disk.c \
