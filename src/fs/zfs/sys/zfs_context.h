@@ -73,7 +73,9 @@ extern "C" {
 #include <sys/disp.h>
 #include <sys/callo.h>
 
+#if !defined(__zfsd__)
 #define	CPU_SEQID	(CPU->cpu_seqid)
+#endif
 
 #ifdef	__cplusplus
 }

@@ -25,6 +25,7 @@
 #define THREAD_H_94F3AC58_A4AE_41B9_8BE8_9A010FAB68DB
 
 #include <pthread.h>
+#include <sched.h>
 
 #ifdef  __cplusplus
 extern "C" {
@@ -71,6 +72,8 @@ pid_t thread_gettid();
 
 #define max_ncpus       (sysconf(_SC_NPROCESSORS_CONF))
 #define boot_ncpus      (sysconf(_SC_NPROCESSORS_ONLN))
+
+#define	CPU_SEQID	sched_getcpu()
 
 #ifdef  __cplusplus
 }
