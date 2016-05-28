@@ -6,6 +6,7 @@ libspl_la_SOURCES = \
 	lib/libspl/bitmap_arch.c \
 	lib/libspl/callb.c \
 	lib/libspl/condvar.c \
+	lib/libspl/copy.c \
 	lib/libspl/cred.c \
 	lib/libspl/cyclic.c \
 	lib/libspl/debug.c \
@@ -29,6 +30,7 @@ libspl_la_SOURCES = \
 	lib/libspl/spl/callb.h \
 	lib/libspl/spl/cmn_err.h \
 	lib/libspl/spl/condvar.h \
+	lib/libspl/spl/copy.h \
 	lib/libspl/spl/cred.h \
 	lib/libspl/spl/cyclic.h \
 	lib/libspl/spl/ddi.h \

@@ -1,4 +1,3 @@
-
 /** @file
  *
  *  A brief file description
@@ -22,21 +21,19 @@
  *  limitations under the License.
  */
 
+#ifndef COPY_H_3CF40C66_24D5_4E69_BFA5_C7BB21C6233E
+#define COPY_H_3CF40C66_24D5_4E69_BFA5_C7BB21C6233E
 
-#ifndef SYSTM_H_A29C3BEE_3C36_48FB_8A73_F0FDBAB71EA1
-#define SYSTM_H_A29C3BEE_3C36_48FB_8A73_F0FDBAB71EA1
+#ifdef  __cplusplus
+extern "C" {
+#endif
 
-#include <spl/types.h>
-#include <spl/mutex.h>
-#include <spl/rwlock.h>
-#include <spl/condvar.h>
-#include <spl/file.h>
-#include <spl/string.h>
-#include <spl/time.h>
-#include <spl/sdt.h>
-#include <spl/copy.h>
-#include <spl/u8_textprep.h>
-#include <errno.h>
-#include <string.h>
+int copyinstr(const char *src, char *dst, size_t max_len, size_t *copied);
+int copystr(const char *src, char *dst, size_t max_len, size_t *outlen);
+void ovbcopy(const void *src, void *dst, size_t len);
 
-#endif /* SYSTM_H_A29C3BEE_3C36_48FB_8A73_F0FDBAB71EA1 */
+#ifdef  __cplusplus
+}
+#endif
+
+#endif /* COPY_H_3CF40C66_24D5_4E69_BFA5_C7BB21C6233E */
