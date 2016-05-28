@@ -208,6 +208,10 @@ spa_history_log_sync(void *arg, dmu_tx_t *tx)
 	char		*record_packed = NULL;
 	int		ret;
 
+#if defined(__zfsd__)
+        struct utsname utsname;
+        VERIFY3(uname(&utsname), ==, 0);
+#endif
 	/*
 	 * If we have an older pool that doesn't have a command
 	 * history object, create it now.
@@ -531,6 +535,11 @@ spa_history_log_internal_dd(dsl_dir_t *dd, const char *operation,
 void
 spa_history_log_version(spa_t *spa, const char *operation)
 {
+#if defined(__zfsd__)
+        struct utsname utsname;
+        VERIFY3(uname(&utsname), ==, 0);
+#endif
+
 	spa_history_log_internal(spa, operation, NULL,
 	    "pool version %llu; software version %llu/%d; uts %s %s %s %s",
 	    (u_longlong_t)spa_version(spa), SPA_VERSION, ZPL_VERSION,

@@ -367,6 +367,11 @@ spa_config_generate(spa_t *spa, vdev_t *vd, uint64_t txg, int getstats)
 	boolean_t locked = B_FALSE;
 	uint64_t split_guid;
 
+#if defined(__zfsd__)
+        struct utsname utsname;
+        VERIFY3(uname(&utsname), ==, 0);
+#endif
+
 	if (vd == NULL) {
 		vd = rvd;
 		locked = B_TRUE;
