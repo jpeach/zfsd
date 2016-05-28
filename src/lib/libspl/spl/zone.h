@@ -33,6 +33,8 @@ extern "C" {
 struct zone;
 typedef struct zone zone_t;
 
+typedef int zoneid_t;
+
 #define GLOBAL_ZONEID   0
 #define INGLOBALZONE(p) 1
 

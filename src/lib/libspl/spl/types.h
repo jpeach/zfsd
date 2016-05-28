@@ -70,8 +70,6 @@ typedef int fd_t;
 
 typedef short index_t;
 
-typedef int zoneid_t;
-
 // Errno value for success.
 #if !defined(ESUCCESS)
 #define ESUCCESS 0

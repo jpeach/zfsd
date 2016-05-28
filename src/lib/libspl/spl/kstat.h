@@ -34,6 +34,7 @@
 
 #include <sys/types.h>
 #include <sys/time.h>
+#include <sys/zone.h>
 
 #ifdef	__cplusplus
 extern "C" {
