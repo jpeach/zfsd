@@ -44,6 +44,13 @@ zone_get_hostid(zone_t * z) {
     return gethostid();
 }
 
+/* All datasets are always visible. */
+static inline int
+zone_dataset_visible(const char *dataset, int *write) {
+    if (write) { *write = 1; }
+    return 1;
+}
+
 #ifdef  __cplusplus
 }
 #endif
