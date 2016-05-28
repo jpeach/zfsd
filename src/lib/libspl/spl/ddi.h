@@ -1,4 +1,3 @@
-
 /** @file
  *
  *  A brief file description
@@ -22,10 +21,18 @@
  *  limitations under the License.
  */
 
+#ifndef DDI_H_62B3F904_DC55_463B_91E0_CFE6A3D05640
+#define DDI_H_62B3F904_DC55_463B_91E0_CFE6A3D05640
 
-#ifndef DDI_H_ED44924D_54A2_482B_A0A9_2CEACFFF5060
-#define DDI_H_ED44924D_54A2_482B_A0A9_2CEACFFF5060
+#ifdef  __cplusplus
+extern "C" {
+#endif
 
-#include <spl/ddi.h>
+typedef struct __ddi_devid *ddi_devid_t;
+typedef struct __ldi_handle *ldi_handle_t;
 
-#endif /* DDI_H_ED44924D_54A2_482B_A0A9_2CEACFFF5060 */
+#ifdef  __cplusplus
+}
+#endif
+
+#endif /* DDI_H_62B3F904_DC55_463B_91E0_CFE6A3D05640 */

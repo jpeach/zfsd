@@ -31,6 +31,7 @@ libspl_la_SOURCES = \
 	lib/libspl/spl/condvar.h \
 	lib/libspl/spl/cred.h \
 	lib/libspl/spl/cyclic.h \
+	lib/libspl/spl/ddi.h \
 	lib/libspl/spl/debug.h \
 	lib/libspl/spl/dkio.h \
 	lib/libspl/spl/door.h \
