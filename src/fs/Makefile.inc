@@ -157,8 +157,6 @@ libzfs_la_SOURCES = \
 	fs/zfs/zfeature.c \
 	fs/zfs/zfs_byteswap.c \
 	fs/zfs/zfs_debug.c \
-	fs/zfs/zfs_dir.c \
-	fs/zfs/zfs_ioctl.c \
 	fs/zfs/zfs_replay.c \
 	fs/zfs/zfs_rlock.c \
 	fs/zfs/zil.c \
@@ -174,11 +172,13 @@ libzfs_la_SOURCES += \
 	fs/compat/zfs_acl.c
 
 libzfs_la_NOTYET =  \
+	fs/zfs/zfs_ioctl.c \
 	fs/zfs/dmu_diff.c \
 	fs/zfs/vdev_disk.c \
 	fs/zfs/vdev_file.c \
 	fs/zfs/zfs_acl.c \
 	fs/zfs/zfs_ctldir.c \
+	fs/zfs/zfs_dir.c \
 	fs/zfs/zfs_fm.c \
 	fs/zfs/zfs_fuid.c \
 	fs/zfs/zfs_log.c \

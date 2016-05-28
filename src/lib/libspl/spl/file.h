@@ -25,6 +25,7 @@
 #define FILE_H_F2A2E7C9_9795_434D_912C_04473DEA855D
 
 #include <fcntl.h>
+#include_next <sys/file.h>
 
 #ifdef  __cplusplus
 extern "C" {
@@ -57,6 +58,10 @@ typedef enum {
     FEXEC       = 0x400000,
     FCLOEXEC    = 0x800000,
 } fflags_t;
+
+typedef struct flock64 flock64_t;
+
+#define F_FREESP 27 /* Free file space */
 
 #ifdef  __cplusplus
 }
