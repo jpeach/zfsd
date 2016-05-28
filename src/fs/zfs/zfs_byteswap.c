@@ -30,6 +30,7 @@
 #include <sys/zfs_sa.h>
 #include <sys/zfs_acl.h>
 
+#if !defined(__zfsd__)
 void
 zfs_oldace_byteswap(ace_t *ace, int ace_cnt)
 {
@@ -131,6 +132,8 @@ zfs_ace_byteswap(void *buf, size_t size, boolean_t zfs_layout)
 		ptr = ptr + entry_size;
 	}
 }
+
+#endif /* !defined(__zfsd__) */
 
 /* ARGSUSED */
 void
