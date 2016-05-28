@@ -182,7 +182,7 @@ spa_history_write(spa_t *spa, void *buf, uint64_t len, spa_history_phys_t *shpp,
 static char *
 spa_history_zone(void)
 {
-#ifdef _KERNEL
+#if defined(_KERNEL) && !defined(__zfsd__)
 	if (INGLOBALZONE(curproc))
 		return (NULL);
 	return (curproc->p_zone->zone_name);
