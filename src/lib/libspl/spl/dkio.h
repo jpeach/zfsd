@@ -520,6 +520,14 @@ typedef struct dkioc_free_s {
 
 #define	DF_WAIT_SYNC	0x00000001	/* Wait for full write-out of free. */
 
+#define B_BUSY          0x0001  /* not on av_forw/back list */
+#define B_DONE          0x0002  /* transaction finished */
+#define B_ERROR         0x0004  /* transaction aborted */
+#define B_PAGEIO        0x0010  /* do I/O to pages on bp->p_pages */
+#define B_PHYS          0x0020  /* Physical IO potentially using UNIBUS map */
+#define B_READ          0x0040  /* read when I/O occurs */
+#define B_WRITE         0x0100  /* non-read pseudo-flag */
+
 #ifdef	__cplusplus
 }
 #endif
