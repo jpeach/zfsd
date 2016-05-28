@@ -145,7 +145,6 @@ libzfs_la_SOURCES = \
 	fs/zfs/unique.c \
 	fs/zfs/vdev.c \
 	fs/zfs/vdev_cache.c \
-	fs/zfs/vdev_file.c \
 	fs/zfs/vdev_label.c \
 	fs/zfs/vdev_mirror.c \
 	fs/zfs/vdev_missing.c \
@@ -176,6 +175,7 @@ libzfs_la_SOURCES += \
 libzfs_la_NOTYET =  \
 	fs/zfs/dmu_diff.c \
 	fs/zfs/vdev_disk.c \
+	fs/zfs/vdev_file.c \
 	fs/zfs/zfs_acl.c \
 	fs/zfs/zfs_ctldir.c \
 	fs/zfs/zfs_fm.c \
