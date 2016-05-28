@@ -88,6 +88,8 @@ MUTEX_NOT_HELD(const kmutex_t *m) {
     return !MUTEX_HELD(m);
 }
 
+extern kmutex_t cpu_lock;
+
 #ifdef  __cplusplus
 }
 #endif

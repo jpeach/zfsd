@@ -14,6 +14,7 @@ libspl_la_SOURCES = \
 	lib/libspl/fnvpair.c \
 	lib/libspl/kmem.c \
 	lib/libspl/list.c \
+	lib/libspl/mutex.c \
 	lib/libspl/nvpair.c \
 	lib/libspl/nvpair_alloc_fixed.c \
 	lib/libspl/nvpair_alloc_system.c \
