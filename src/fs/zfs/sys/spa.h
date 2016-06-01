@@ -843,7 +843,7 @@ extern void spa_history_log_internal_dd(dsl_dir_t *dd, const char *operation,
 /* error handling */
 struct zbookmark_phys;
 extern void spa_log_error(spa_t *spa, zio_t *zio);
-extern void zfs_ereport_post(const char *class, spa_t *spa, vdev_t *vd,
+extern void zfs_ereport_post(const char *subclass, spa_t *spa, vdev_t *vd,
     zio_t *zio, uint64_t stateoroffset, uint64_t length);
 extern void zfs_post_remove(spa_t *spa, vdev_t *vd);
 extern void zfs_post_state_change(spa_t *spa, vdev_t *vd);
