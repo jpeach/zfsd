@@ -1374,7 +1374,7 @@ zio_delay_interrupt(zio_t *zio)
 	 * functionality has been disabled for userspace builds.
 	 */
 
-#ifdef _KERNEL
+#if defined(_KERNEL) && !defined(__zfsd__)
 	/*
 	 * If io_target_timestamp is zero, then no delay has been registered
 	 * for this IO, thus jump to the end of this function and "skip" the
