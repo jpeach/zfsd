@@ -70,6 +70,11 @@ void thread_exit(void);
 void thread_setname(kthread_t * thr, const char * name);
 pid_t thread_gettid();
 
+void tsd_create(uint_t * key, void (*exit)(void *));
+void tsd_destroy(uint_t * key);
+void *tsd_get(uint_t key);
+int tsd_set(uint_t key, void * value);
+
 #define max_ncpus       (sysconf(_SC_NPROCESSORS_CONF))
 #define boot_ncpus      (sysconf(_SC_NPROCESSORS_ONLN))
 
