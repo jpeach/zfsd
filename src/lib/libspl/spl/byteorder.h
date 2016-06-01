@@ -58,6 +58,7 @@ extern "C" {
 #define BE_IN32(ptr)	BE_READ(ptr, 32)
 #define BE_IN64(ptr)	BE_READ(ptr, 64)
 
+#define BSWAP_8(x)  ((x) & 0xff)
 #define BSWAP_16(x) bswap_16(x)
 #define BSWAP_32(x) bswap_32(x)
 #define BSWAP_64(x) bswap_64(x)
