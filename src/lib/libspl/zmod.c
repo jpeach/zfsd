@@ -24,11 +24,19 @@
  * Use is subject to license terms.
  */
 
+#if !defined(__zfsd__)
 #include <sys/modctl.h>
+#else
+#include <strings.h>
+#endif /* !defined(__zfsd__) */
 #include <sys/zmod.h>
 
 #include "zlib.h"
+#if !defined(__zfsd__)
 #include "zutil.h"
+#else
+#define DEF_WBITS MAX_WBITS
+#endif /* !defined(__zfsd__) */
 
 /*
  * Uncompress the buffer 'src' into the buffer 'dst'.  The caller must store

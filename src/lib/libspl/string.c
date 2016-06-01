@@ -31,7 +31,9 @@
  */
 
 #include <sys/types.h>
+#if !defined(__zfsd__)
 #include <sys/null.h>
+#endif /* !defined(__zfsd__) */
 #include <sys/varargs.h>
 
 #if defined(_KERNEL)
@@ -41,7 +43,9 @@
 #include <string.h>
 #endif
 
+#if !defined(__zfsd__)
 #include "memcpy.h"
+#endif /* !defined(__zfsd__) */
 #include "string.h"
 
 size_t

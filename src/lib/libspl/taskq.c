@@ -46,7 +46,7 @@
 typedef kthread_t * thread_t;
 
 static int
-thr_create(void *stk, size_t stksize, pthread_proc_t func, void *arg,
+thr_create(void *stk, size_t stksize, kthread_proc_t func, void *arg,
         long flags, thread_t *new_thread)
 {
 	(void)stk;

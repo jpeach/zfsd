@@ -23,6 +23,9 @@
 
 #include <spl/types.h>
 #include <spl/thread.h>
+#include <spl/debug.h>
+
+struct proc {};
 
 struct proc p0;
 
@@ -69,7 +72,7 @@ tsd_create(uint_t * key, void (*exit)(void *))
 void
 tsd_destroy(uint_t * key)
 {
-    VERIFY0(pthread_key_delete(key));
+    VERIFY0(pthread_key_delete(*key));
 }
 
 void *

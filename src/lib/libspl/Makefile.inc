@@ -60,7 +60,7 @@ libspl_la_SOURCES = \
 	lib/libspl/spl/sysmacros.h \
 	lib/libspl/spl/taskq.h \
 	lib/libspl/spl/taskq_impl.h \
-	lib/libspl/spl/thread.h
+	lib/libspl/spl/thread.h \
 	lib/libspl/spl/time.h \
 	lib/libspl/spl/types.h \
 	lib/libspl/spl/u8_textprep.h \
