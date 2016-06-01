@@ -14,6 +14,8 @@ libzfs_la_SOURCES = \
 	fs/common/zfs_fletcher.h \
 	fs/common/zfs_namecheck.c \
 	fs/common/zfs_namecheck.h \
+	fs/common/zfs_prop.c \
+	fs/common/zfs_prop.h \
 	fs/common/zpool_prop.c \
 	fs/common/zprop_common.c \
 	fs/zfs/arc.c \
