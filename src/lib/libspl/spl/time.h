@@ -88,6 +88,11 @@ gethrtime() {
     return SEC_TO_NSEC(ts.tv_sec) + ts.tv_nsec;
 }
 
+static inline void
+gethrestime(struct timespec *ts) {
+    clock_gettime(CLOCK_MONOTONIC_COARSE, ts);
+}
+
 static inline time_t
 gethrestime_sec() {
     return NSEC_TO_SEC(gethrtime());
