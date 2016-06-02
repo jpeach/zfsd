@@ -31,6 +31,9 @@ extern "C" {
 size_t strlcat(char *dst, const char *src, size_t dstsize);
 size_t strlcpy(char *dst, const char *src, size_t len);
 
+int ddi_strtoul(const char *str, char **endptr, int base, unsigned long *result);
+int ddi_strtoull(const char *str, char **endptr, int base, unsigned long long *result);
+
 #ifdef  __cplusplus
 }
 #endif

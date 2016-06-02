@@ -87,3 +87,21 @@ strlcpy(char *dst, const char *src, size_t len)
 	dst[copied] = '\0';
 	return (slen);
 }
+
+int
+ddi_strtoul(const char *str, char **endptr, int base, unsigned long *result)
+{
+        *result = strtoul(str, endptr, base);
+        if (*result == 0)
+                return errno;
+        return 0;
+}
+
+int
+ddi_strtoull(const char *str, char **endptr, int base, unsigned long long *result)
+{
+        *result = strtoull(str, endptr, base);
+        if (*result == 0)
+                return errno;
+        return 0;
+}
