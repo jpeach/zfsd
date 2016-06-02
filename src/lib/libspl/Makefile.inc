@@ -12,6 +12,7 @@ libspl_la_SOURCES = \
 	lib/libspl/debug.c \
 	lib/libspl/edonr.c \
 	lib/libspl/edonr_byteorder.h \
+	lib/libspl/fm.c \
 	lib/libspl/fnvpair.c \
 	lib/libspl/kmem.c \
 	lib/libspl/list.c \
@@ -41,6 +42,7 @@ libspl_la_SOURCES = \
 	lib/libspl/spl/edonr.h \
 	lib/libspl/spl/eventdefs.h \
 	lib/libspl/spl/file.h \
+	lib/libspl/spl/fm.h \
 	lib/libspl/spl/idmap.h \
 	lib/libspl/spl/kidmap.h \
 	lib/libspl/spl/kmem.h \
