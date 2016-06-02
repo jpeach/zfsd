@@ -170,6 +170,7 @@ libzfs_la_SOURCES = \
 	fs/zfs/zrlock.c
 
 libzfs_la_SOURCES += \
+	fs/compat/dprintf.c \
 	fs/compat/spa_config.c \
 	fs/compat/zfs_acl.c
 

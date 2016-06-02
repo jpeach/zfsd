@@ -67,7 +67,7 @@ kmem_cache_create(const char *name, size_t bufsize, size_t align,
     ASSERT(vmp == NULL);
 
     if (reclaim) {
-        spl_dprintf("ignoring unimplemented reclaim function %p\n", reclaim);
+        // XXX no reclaim support.
     }
 
     cache = kmem_zalloc(sizeof(struct kmem_cache), KM_SLEEP);

@@ -79,6 +79,7 @@ int tsd_set(uint_t key, void * value);
 #define boot_ncpus      (sysconf(_SC_NPROCESSORS_ONLN))
 
 #define	CPU_SEQID	sched_getcpu()
+#define	getcpuid()      sched_getcpu()
 
 #ifdef  __cplusplus
 }

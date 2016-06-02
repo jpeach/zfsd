@@ -74,19 +74,6 @@ extern void __assert_fail (const char *__assertion, const char *__file,
     } \
 } while (0)
 
-extern unsigned spl_flags;
-
-#define SPL_DEBUG_DPRINTF (1<<0)
-
-void __spl_dprintf(const char *file, const char *func, int line, const char *fmt, ...)
-    __attribute__((format(printf, 4, 5)));
-void __spl_dprintf_setup(int *argc, char **argv);
-
-#define spl_dprintf(...) do {\
-        if (spl_flags & SPL_DEBUG_DPRINTF) \
-                __spl_dprintf(__FILE__, __func__, __LINE__, __VA_ARGS__); \
-} while (0)
-
 #ifdef  __cplusplus
 }
 #endif
