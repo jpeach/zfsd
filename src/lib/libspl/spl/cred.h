@@ -34,7 +34,7 @@ extern "C" {
 typedef struct cred cred_t;
 
 // A well-known handle to the current thread credential.
-#define CRED() ((cred_t *)(uintptr_t)(-1))
+cred_t * CRED(void);
 
 // Fully privileged credential (ie. superuser).
 extern struct cred *kcred;
@@ -48,13 +48,13 @@ uid_t crgetruid(const cred_t *cr);
 /* Return the saved UID. */
 uid_t crgetsuid(const cred_t *cr);
 
-/* Return the real GID. */
+/* Return the effective GID. */
 gid_t crgetgid(const cred_t *cr);
 
 /* Return the real GID. */
 gid_t crgetrgid(const cred_t *cr);
 
-/* Return the real GID. */
+/* Return the saved GID. */
 gid_t crgetsgid(const cred_t *cr);
 
 /* Return the zone id from the user credential. */
@@ -65,7 +65,6 @@ const gid_t *crgetgroups(const cred_t *cr);
 /* Returns the number of groups in the user credential. */
 int crgetngroups(const cred_t *cr);
 
-int crsetresuid(cred_t *cr, uid_t ruid, uid_t euid, uid_t suid);
 
 #ifdef  __cplusplus
 }

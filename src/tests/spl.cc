@@ -26,6 +26,7 @@
 #include <spl/rwlock.h>
 #include <spl/random.h>
 #include <spl/byteorder.h>
+#include <spl/cred.h>
 #include <string.h>
 
 // Basic atomic ops tests. We are not testing the atomicity here, just
@@ -122,6 +123,28 @@ TEST_CASE("Basic byte order", "[spl]")
     REQUIRE(BE_IN16(&bytes[1]) == 5000);
     REQUIRE(LE_IN16(&bytes[3]) == 16);
     REQUIRE(BE_IN32(&bytes[5]) == 1484438676);
+}
+
+TEST_CASE("Basic current UIDs", "[spl]")
+{
+    uid_t ruid, euid, suid;
+
+    REQUIRE(getresuid(&ruid, &euid, &suid) == 0);
+
+    REQUIRE(ruid == crgetuid(CRED()));
+    REQUIRE(euid == crgetruid(CRED()));
+    REQUIRE(suid == crgetsuid(CRED()));
+}
+
+TEST_CASE("Basic current GIDs", "[spl]")
+{
+    gid_t rgid, egid, sgid;
+
+    REQUIRE(getresgid(&rgid, &egid, &sgid) == 0);
+
+    REQUIRE(rgid == crgetgid(CRED()));
+    REQUIRE(egid == crgetrgid(CRED()));
+    REQUIRE(sgid == crgetsgid(CRED()));
 }
 
 /* vim: set sts=4 sw=4 ts=4 tw=79 et: */

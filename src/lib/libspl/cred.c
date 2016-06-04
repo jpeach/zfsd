@@ -27,6 +27,99 @@
 struct cred{};
 
 static struct cred cred0;
+static struct cred current;
+
 struct cred *kcred = &cred0;
+
+cred_t * CRED(void)
+{
+    return &current;
+}
+
+static void
+cred_getresuid(const cred_t *cr, uid_t *ruid, uid_t *euid, uid_t *suid)
+{
+    if (cr == CRED()) {
+        getresuid(ruid, euid, suid);
+        return;
+    }
+
+    if (cr == kcred) {
+        *ruid = *euid = *suid = 0;
+        return;
+    }
+
+    *ruid = *euid = *suid = -1;
+}
+
+static void
+cred_getresgid(const cred_t *cr, gid_t *rgid, gid_t *egid, gid_t *sgid)
+{
+    if (cr == CRED()) {
+        getresgid(rgid, egid, sgid);
+        return;
+    }
+
+    if (cr == kcred) {
+        *rgid = *egid = *sgid = 0;
+        return;
+    }
+
+    *rgid = *egid = *sgid = -1;
+}
+
+/* Return the real UID. */
+uid_t crgetruid(const cred_t *cr)
+{
+    uid_t ruid, euid, suid;
+    cred_getresuid(cr, &ruid, &euid, &suid);
+
+    return ruid;
+}
+
+/* Return the effective UID. */
+uid_t crgetuid(const cred_t *cr)
+{
+    uid_t ruid, euid, suid;
+    cred_getresuid(cr, &ruid, &euid, &suid);
+
+    return euid;
+}
+
+/* Return the saved UID. */
+uid_t crgetsuid(const cred_t *cr)
+{
+    uid_t ruid, euid, suid;
+    cred_getresuid(cr, &ruid, &euid, &suid);
+
+    return suid;
+}
+
+/* Return the effective GID. */
+gid_t crgetgid(const cred_t *cr)
+{
+    gid_t rgid, egid, sgid;
+    cred_getresgid(cr, &rgid, &egid, &sgid);
+
+    return egid;
+}
+
+/* Return the real GID. */
+gid_t crgetrgid(const cred_t *cr)
+{
+    gid_t rgid, egid, sgid;
+    cred_getresgid(cr, &rgid, &egid, &sgid);
+
+    return egid;
+}
+
+/* Return the saved GID. */
+gid_t crgetsgid(const cred_t *cr)
+{
+    gid_t rgid, egid, sgid;
+    cred_getresgid(cr, &rgid, &egid, &sgid);
+
+    return egid;
+}
 
 /* vim: set sts=4 sw=4 ts=4 tw=79 et: */
