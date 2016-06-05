@@ -122,4 +122,21 @@ gid_t crgetsgid(const cred_t *cr)
     return egid;
 }
 
+// XXX Returning the groups list really requires that we have a cred_t object
+// that can be populated. Populating a cred_t object is find for kcred and for
+// RPCs over authenticated sockets but becomes a bit awkward when we used
+// CRED() to get the implicit thread credential. To implement that, we will
+// probably end up using a __thread cred_t and assiging it when we receive an
+// inbound RPC.
+
+const gid_t *crgetgroups(const cred_t *cr)
+{
+    return NULL;
+}
+
+int crgetngroups(const cred_t *cr)
+{
+    return 0;
+}
+
 /* vim: set sts=4 sw=4 ts=4 tw=79 et: */

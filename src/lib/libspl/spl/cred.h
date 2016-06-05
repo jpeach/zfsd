@@ -65,7 +65,6 @@ const gid_t *crgetgroups(const cred_t *cr);
 /* Returns the number of groups in the user credential. */
 int crgetngroups(const cred_t *cr);
 
-
 #ifdef  __cplusplus
 }
 #endif
