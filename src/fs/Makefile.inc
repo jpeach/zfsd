@@ -173,6 +173,7 @@ libzfs_la_SOURCES = \
 libzfs_la_SOURCES += \
 	fs/compat/dprintf.c \
 	fs/compat/spa_config.c \
+	fs/compat/stubs.c \
 	fs/compat/zfs_acl.c
 
 libzfs_la_NOTYET =  \
