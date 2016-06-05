@@ -15,6 +15,7 @@ libspl_la_SOURCES = \
 	lib/libspl/fm.c \
 	lib/libspl/fnvpair.c \
 	lib/libspl/kmem.c \
+	lib/libspl/kstat.c \
 	lib/libspl/list.c \
 	lib/libspl/mutex.c \
 	lib/libspl/nvpair.c \
