@@ -261,6 +261,29 @@ taskq_thread(void *arg)
 	return (NULL);
 }
 
+/* Like taskq_create_proc(), but the taskq threads will use the
+ * System Duty Cycle (SDC) scheduling class with a duty cycle of dc.
+ */
+taskq_t	*
+taskq_create_sysdc(const char *name, int nthreads, int minalloc,
+    int maxalloc, struct proc *proc, uint_t dc, uint_t flags)
+{
+	// NOTE: proc and dc are ignored.
+	return taskq_create(name, nthreads, minclsyspri, minalloc, maxalloc, flags);
+}
+
+/* Like taskq_create(), but creates the taskq threads in the specified
+ * system process.  If proc != &p0, this must be called from a thread
+ * in that process.
+ */
+taskq_t *
+taskq_create_proc(const char *name, int nthreads, pri_t pri, int minalloc,
+    int maxalloc, struct proc *proc, uint_t flags)
+{
+	// NOTE: proc is ignored.
+	return taskq_create(name, nthreads, pri, minalloc, maxalloc, flags);
+}
+
 /*ARGSUSED*/
 taskq_t *
 taskq_create(const char *name, int nthreads, pri_t pri,
