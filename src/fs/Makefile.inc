@@ -10,6 +10,7 @@ libzfs_la_SOURCES = \
 	fs/common/zfeature_common.h \
 	fs/common/zfs_comutil.c \
 	fs/common/zfs_comutil.h \
+	fs/common/zfs_deleg.c \
 	fs/common/zfs_fletcher.c \
 	fs/common/zfs_fletcher.h \
 	fs/common/zfs_namecheck.c \
