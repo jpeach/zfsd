@@ -24,6 +24,8 @@
 #ifndef COPY_H_3CF40C66_24D5_4E69_BFA5_C7BB21C6233E
 #define COPY_H_3CF40C66_24D5_4E69_BFA5_C7BB21C6233E
 
+#include <string.h>
+
 #ifdef  __cplusplus
 extern "C" {
 #endif
@@ -31,6 +33,20 @@ extern "C" {
 int copyinstr(const char *src, char *dst, size_t max_len, size_t *copied);
 int copystr(const char *src, char *dst, size_t max_len, size_t *outlen);
 void ovbcopy(const void *src, void *dst, size_t len);
+
+static inline int
+copyin(const void *src, void *dst, size_t nbytes)
+{
+	memcpy(dst, src, nbytes);
+	return 0;
+}
+
+static inline int
+copyout(const void *src, void *dst, size_t nbytes)
+{
+	memcpy(dst, src, nbytes);
+	return 0;
+}
 
 #ifdef  __cplusplus
 }
