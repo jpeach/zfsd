@@ -17,6 +17,7 @@ libspl_la_SOURCES = \
 	lib/libspl/kmem.c \
 	lib/libspl/kstat.c \
 	lib/libspl/list.c \
+	lib/libspl/move.c \
 	lib/libspl/mutex.c \
 	lib/libspl/nvpair.c \
 	lib/libspl/nvpair_alloc_fixed.c \
