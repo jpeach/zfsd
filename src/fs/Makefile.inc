@@ -163,6 +163,7 @@ libzfs_la_SOURCES = \
 	fs/zfs/zfs_fm.c \
 	fs/zfs/zfs_replay.c \
 	fs/zfs/zfs_rlock.c \
+	fs/zfs/zfs_vfsops.c \
 	fs/zfs/zil.c \
 	fs/zfs/zio.c \
 	fs/zfs/zio_checksum.c \
@@ -189,7 +190,6 @@ libzfs_la_NOTYET =  \
 	fs/zfs/zfs_log.c \
 	fs/zfs/zfs_onexit.c \
 	fs/zfs/zfs_sa.c \
-	fs/zfs/zfs_vfsops.c \
 	fs/zfs/zfs_vnops.c \
 	fs/zfs/zfs_znode.c \
 	fs/zfs/zvol.c

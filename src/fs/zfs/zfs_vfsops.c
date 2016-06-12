@@ -26,6 +26,14 @@
 
 /* Portions Copyright 2010 Robert Milkowski */
 
+#if defined(__zfsd__)
+#include <sys/zfs_context.h>
+#include <sys/zfs_znode.h>
+#include <sys/dmu.h>
+#include <sys/zap.h>
+#endif /* defined(__zfsd__) */
+
+#if !defined(__zfsd__)
 #include <sys/types.h>
 #include <sys/param.h>
 #include <sys/systm.h>
@@ -2229,6 +2237,7 @@ zfs_set_version(zfsvfs_t *zfsvfs, uint64_t newvers)
 
 	return (0);
 }
+#endif /* !defined(__zfsd__) */
 
 /*
  * Read a property stored within the master node.
@@ -2272,6 +2281,7 @@ zfs_get_zplprop(objset_t *os, zfs_prop_t prop, uint64_t *value)
 	return (error);
 }
 
+#if !defined(__zfsd__)
 static vfsdef_t vfw = {
 	VFSDEF_VERSION,
 	MNTTYPE_ZFS,
@@ -2284,3 +2294,4 @@ static vfsdef_t vfw = {
 struct modlfs zfs_modlfs = {
 	&mod_fsops, "ZFS filesystem version " SPA_VERSION_STRING, &vfw
 };
+#endif /* !defined(__zfsd__) */
