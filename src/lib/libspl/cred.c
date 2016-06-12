@@ -23,6 +23,7 @@
 
 #include <spl/types.h>
 #include <spl/cred.h>
+#include <spl/zone.h>
 
 struct cred{};
 
@@ -137,6 +138,12 @@ const gid_t *crgetgroups(const cred_t *cr)
 int crgetngroups(const cred_t *cr)
 {
     return 0;
+}
+
+// We don't support zones so everything is global.
+zoneid_t crgetzoneid(const cred_t *cr)
+{
+    return GLOBAL_ZONEID;
 }
 
 /* vim: set sts=4 sw=4 ts=4 tw=79 et: */
