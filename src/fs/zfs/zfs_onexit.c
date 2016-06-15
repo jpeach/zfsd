@@ -107,11 +107,16 @@ zfs_onexit_destroy(zfs_onexit_t *zo)
 static int
 zfs_onexit_minor_to_state(minor_t minor, zfs_onexit_t **zo)
 {
+#if defined(__zfsd__)
+	*zo = NULL;
+	return (SET_ERROR(ENOSYS));
+#else
 	*zo = zfsdev_get_soft_state(minor, ZSST_CTLDEV);
 	if (*zo == NULL)
 		return (SET_ERROR(EBADF));
 
 	return (0);
+#endif
 }
 
 /*
@@ -123,6 +128,9 @@ zfs_onexit_minor_to_state(minor_t minor, zfs_onexit_t **zo)
 int
 zfs_onexit_fd_hold(int fd, minor_t *minorp)
 {
+#if defined(__zfsd__)
+	return (SET_ERROR(ENOSYS));
+#else
 	file_t *fp;
 	zfs_onexit_t *zo;
 
@@ -132,12 +140,15 @@ zfs_onexit_fd_hold(int fd, minor_t *minorp)
 
 	*minorp = getminor(fp->f_vnode->v_rdev);
 	return (zfs_onexit_minor_to_state(*minorp, &zo));
+#endif /* defined(__zfsd__) */
 }
 
 void
 zfs_onexit_fd_rele(int fd)
 {
+#if !defined(__zfsd__)
 	releasef(fd);
+#endif
 }
 
 /*
