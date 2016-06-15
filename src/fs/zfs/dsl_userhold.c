@@ -578,7 +578,9 @@ dsl_dataset_user_release_impl(nvlist_t *holds, nvlist_t *errlist,
 				dsl_dataset_name(ds, name);
 				dsl_pool_config_exit(tmpdp, FTAG);
 				dsl_dataset_rele(ds, FTAG);
+#if !defined(__zfsd__)
 				(void) zfs_unmount_snap(name);
+#endif
 			} else {
 				dsl_pool_config_exit(tmpdp, FTAG);
 			}
@@ -591,7 +593,9 @@ dsl_dataset_user_release_impl(nvlist_t *holds, nvlist_t *errlist,
 #ifdef _KERNEL
 		for (pair = nvlist_next_nvpair(holds, NULL); pair != NULL;
 		    pair = nvlist_next_nvpair(holds, pair)) {
+#if !defined(__zfsd__)
 			(void) zfs_unmount_snap(nvpair_name(pair));
+#endif
 		}
 #endif
 	}
