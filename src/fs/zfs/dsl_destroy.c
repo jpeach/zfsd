@@ -911,7 +911,7 @@ dsl_destroy_head(const char *name)
 	spa_t *spa;
 	boolean_t isenabled;
 
-#ifdef _KERNEL
+#if defined(_KERNEL) && !defined(__zfsd__)
 	zfs_destroy_unmount_origin(name);
 #endif
 

@@ -3120,7 +3120,7 @@ dmu_recv_existing_end(dmu_recv_cookie_t *drc)
 	int error;
 	char name[MAXNAMELEN];
 
-#ifdef _KERNEL
+#if defined(_KERNEL) && !defined(__zfsd__)
 	/*
 	 * We will be destroying the ds; make sure its origin is unmounted if
 	 * necessary.
