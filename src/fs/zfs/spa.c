@@ -3844,7 +3844,17 @@ spa_create(const char *pool, nvlist_t *nvroot, nvlist_t *props,
 	return (0);
 }
 
-#ifdef _KERNEL
+#if defined(__zfsd__)
+// In userland we can have a config file for our root configuration, or as many
+// as we like. There's no need to probe devices.
+int
+spa_import_rootpool(char *devpath, char *devid)
+{
+    return ENOSYS;
+}
+#endif /* defined(__zfsd__) */
+
+#if defined(_KERNEL) && !defined(__zfsd__)
 /*
  * Get the root pool information from the root disk, then import the root pool
  * during the system boot up time.
