@@ -91,6 +91,20 @@ struct send_block_record {
 	bqueue_node_t		ln;
 };
 
+#if defined(__zfsd__)
+/* There's no VFS layer in zfsd right now, which means no way to implement
+ * vn_rdwr. Maybe when we look at send and recieve ww will implement this
+ * with file descriptor passing, so it would be different anyway.
+ */
+int
+vn_rdwr(enum uio_rw rw, struct vnode *vp, caddr_t base, ssize_t len,
+    offset_t offset, enum uio_seg seg, int ioflag, rlim64_t ulimit,
+    cred_t *cr, ssize_t *residp)
+{
+        return SET_ERROR(ENOSYS);
+}
+#endif
+
 static int
 dump_bytes(dmu_sendarg_t *dsp, void *buf, int len)
 {
