@@ -23,10 +23,31 @@
 
 #include <spl/types.h>
 #include <spl/mutex.h>
+#include <spl/debug.h>
 
 kmutex_t cpu_lock = {
     .holder = INVALID_KTHREAD,
     .mutex = PTHREAD_MUTEX_INITIALIZER
 };
+
+void
+mutex_init(kmutex_t * m, char * name, kmutex_type_t type, void * arg)
+{
+    pthread_mutexattr_t attr;
+
+    VERIFY0(pthread_mutexattr_init(&attr));
+
+    /* Error checking mutexes will return an error if we try to recursively
+     * lock or try to unlock one we have not locked.
+     *
+     * See pthread_mutex_lock(3p)
+     */
+    VERIFY0(pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_ERRORCHECK));
+
+    VERIFY0(pthread_mutex_init(&m->mutex, &attr));
+    VERIFY0(pthread_mutexattr_destroy(&attr));
+
+    m->holder = INVALID_KTHREAD;
+}
 
 /* vim: set sts=4 sw=4 ts=4 tw=79 et: */

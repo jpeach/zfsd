@@ -40,11 +40,7 @@ typedef struct kmutex
     pthread_mutex_t mutex;
 } kmutex_t;
 
-static inline void
-mutex_init(kmutex_t * m, char * name, kmutex_type_t type, void * arg) {
-    m->holder = INVALID_KTHREAD;
-    pthread_mutex_init(&m->mutex, NULL);
-}
+void mutex_init(kmutex_t *m, char *name, kmutex_type_t type, void *arg);
 
 static inline void
 mutex_destroy(kmutex_t * m) {
