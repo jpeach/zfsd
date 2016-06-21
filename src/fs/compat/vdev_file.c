@@ -26,15 +26,64 @@
 #include <sys/zfs_context.h>
 #include <sys/spa.h>
 #include <sys/spa_impl.h>
-#include <sys/vdev_file.h>
 #include <sys/vdev_impl.h>
 #include <sys/zio.h>
 #include <sys/fs/zfs.h>
-#include <sys/fm/fs/zfs.h>
+#include <sys/stat.h>
+
+extern int vdev_disk_physio(vdev_t *,
+    caddr_t, size_t, uint64_t, int, boolean_t);
+
+typedef struct vdev_file {
+        int             vf_fd;
+} vdev_file_t;
 
 /*
  * Virtual device vector for files.
  */
+
+static vdev_file_t *
+vdev_file_alloc(void)
+{
+        vdev_file_t *vf;
+
+	vf = kmem_zalloc(sizeof (vdev_file_t), KM_SLEEP);
+        vf->vf_fd = -1;
+
+        return vf;
+}
+
+static int
+vdev_file_openat(vdev_file_t *vf, const char *path, int spa_mode)
+{
+        int flags = 0;
+
+        VERIFY3(vf->vf_fd, ==, -1);
+
+        // Do synchronous IO to provide the guarantees the upper layers want.
+        flags |= O_SYNC;
+
+        // Try to minimize kernel IO bufferring.
+        flags |= O_DIRECT;
+
+        if ((spa_mode & (FREAD|FWRITE)) == (FREAD|FWRITE)) {
+                flags |= O_RDWR;
+        } else if (spa_mode & FREAD) {
+                flags |= O_RDONLY;
+        } else if (spa_mode & FWRITE) {
+                flags |= O_WRONLY;
+        }
+
+        // If we can't open with O_DIRECT, try without it since many
+        // filesystems don't support O_DIRECT.
+        vf->vf_fd = open(path, flags);
+        if (vf->vf_fd == -1 && errno == EINVAL) {
+                flags &= ~O_DIRECT;
+                vf->vf_fd = open(path, flags);
+        }
+
+        return vf->vf_fd == -1 ? errno : ESUCCESS;
+}
 
 static void
 vdev_file_hold(vdev_t *vd)
@@ -53,8 +102,7 @@ vdev_file_open(vdev_t *vd, uint64_t *psize, uint64_t *max_psize,
     uint64_t *ashift)
 {
 	vdev_file_t *vf;
-	vnode_t *vp;
-	vattr_t vattr;
+	struct stat vattr;
 	int error;
 
 	/*
@@ -75,7 +123,7 @@ vdev_file_open(vdev_t *vd, uint64_t *psize, uint64_t *max_psize,
 		goto skip_open;
 	}
 
-	vf = vd->vdev_tsd = kmem_zalloc(sizeof (vdev_file_t), KM_SLEEP);
+	vf = vd->vdev_tsd = vdev_file_alloc();
 
 	/*
 	 * We always open the files from the root of the global zone, even if
@@ -84,38 +132,37 @@ vdev_file_open(vdev_t *vd, uint64_t *psize, uint64_t *max_psize,
 	 * to local zone users, so the underlying devices should be as well.
 	 */
 	ASSERT(vd->vdev_path != NULL && vd->vdev_path[0] == '/');
-	error = vn_openat(vd->vdev_path + 1, UIO_SYSSPACE,
-	    spa_mode(vd->vdev_spa) | FOFFMAX, 0, &vp, 0, 0, rootdir, -1);
-
+        error = vdev_file_openat(vf, vd->vdev_path, spa_mode(vd->vdev_spa) | FOFFMAX);
 	if (error) {
 		vd->vdev_stat.vs_aux = VDEV_AUX_OPEN_FAILED;
 		return (error);
 	}
-
-	vf->vf_vnode = vp;
-
-#ifdef _KERNEL
-	/*
-	 * Make sure it's a regular file.
-	 */
-	if (vp->v_type != VREG) {
-		vd->vdev_stat.vs_aux = VDEV_AUX_OPEN_FAILED;
-		return (SET_ERROR(ENODEV));
-	}
-#endif
 
 skip_open:
 	/*
 	 * Determine the physical size of the file.
 	 */
-	vattr.va_mask = AT_SIZE;
-	error = VOP_GETATTR(vf->vf_vnode, &vattr, 0, kcred, NULL);
+        error = fstat(vf->vf_fd, &vattr);
+        if (error == -1) {
+                error = errno;
+        }
+
 	if (error) {
 		vd->vdev_stat.vs_aux = VDEV_AUX_OPEN_FAILED;
 		return (error);
 	}
 
-	*max_psize = *psize = vattr.va_size;
+	/*
+	 * Make sure it's a regular file.
+	 */
+	if (!S_ISREG(vattr.st_mode)) {
+		vd->vdev_stat.vs_aux = VDEV_AUX_OPEN_FAILED;
+		return (SET_ERROR(ENODEV));
+	}
+
+        /* TODO: Add disk geometry support for block devices. */
+
+	*max_psize = *psize = vattr.st_size;
 	*ashift = SPA_MINBLOCKSHIFT;
 
 	return (0);
@@ -129,57 +176,44 @@ vdev_file_close(vdev_t *vd)
 	if (vd->vdev_reopening || vf == NULL)
 		return;
 
-	if (vf->vf_vnode != NULL) {
-		(void) VOP_PUTPAGE(vf->vf_vnode, 0, 0, B_INVAL, kcred, NULL);
-		(void) VOP_CLOSE(vf->vf_vnode, spa_mode(vd->vdev_spa), 1, 0,
-		    kcred, NULL);
-		VN_RELE(vf->vf_vnode);
-	}
+        if (vf->vf_fd != -1) {
+                fsync(vf->vf_fd);
+                close(vf->vf_fd);
+        }
 
 	vd->vdev_delayed_close = B_FALSE;
 	kmem_free(vf, sizeof (vdev_file_t));
 	vd->vdev_tsd = NULL;
 }
 
-/*
- * Implements the interrupt side for file vdev types. This routine will be
- * called when the I/O completes allowing us to transfer the I/O to the
- * interrupt taskqs. For consistency, the code structure mimics disk vdev
- * types.
- */
-static void
-vdev_file_io_intr(buf_t *bp)
-{
-	vdev_buf_t *vb = (vdev_buf_t *)bp;
-	zio_t *zio = vb->vb_io;
-
-	zio->io_error = (geterror(bp) != 0 ? EIO : 0);
-	if (zio->io_error == 0 && bp->b_resid != 0)
-		zio->io_error = SET_ERROR(ENOSPC);
-
-	kmem_free(vb, sizeof (vdev_buf_t));
-	zio_delay_interrupt(zio);
-}
-
 static void
 vdev_file_io_strategy(void *arg)
 {
-	buf_t *bp = arg;
-	vnode_t *vp = bp->b_private;
+        zio_t *zio = arg;
+	vdev_t *vd = zio->io_vd;
+	vdev_file_t *vf = vd->vdev_tsd;
 	ssize_t resid;
-	int error;
 
-	error = vn_rdwr((bp->b_flags & B_READ) ? UIO_READ : UIO_WRITE,
-	    vp, bp->b_un.b_addr, bp->b_bcount, ldbtob(bp->b_lblkno),
-	    UIO_SYSSPACE, 0, RLIM64_INFINITY, kcred, &resid);
+	switch (zio->io_type) {
+        case ZIO_TYPE_READ:
+                resid = pread(vf->vf_fd, zio->io_data, zio->io_size, zio->io_offset);
+                break;
+        case ZIO_TYPE_WRITE:
+                resid = pwrite(vf->vf_fd, zio->io_data, zio->io_size, zio->io_offset);
+                break;
+        default:
+                panic("invalid zio io_type=%d", zio->io_type);
+        }
 
-	if (error == 0) {
-		bp->b_resid = resid;
-		biodone(bp);
-	} else {
-		bioerror(bp, error);
-		biodone(bp);
-	}
+        if (resid == -1) {
+		zio->io_error = SET_ERROR(errno);
+        }
+
+        if (resid != zio->io_size) {
+		zio->io_error = SET_ERROR(EIO);
+        }
+
+	zio_delay_interrupt(zio);
 }
 
 static void
@@ -187,8 +221,6 @@ vdev_file_io_start(zio_t *zio)
 {
 	vdev_t *vd = zio->io_vd;
 	vdev_file_t *vf = vd->vdev_tsd;
-	vdev_buf_t *vb;
-	buf_t *bp;
 
 	if (zio->io_type == ZIO_TYPE_IOCTL) {
 		/* XXPOLICY */
@@ -198,12 +230,9 @@ vdev_file_io_start(zio_t *zio)
 			return;
 		}
 
-		switch (zio->io_cmd) {
-		case DKIOCFLUSHWRITECACHE:
-			zio->io_error = VOP_FSYNC(vf->vf_vnode, FSYNC | FDSYNC,
-			    kcred, NULL);
-			break;
-		default:
+		if (zio->io_cmd == DKIOCFLUSHWRITECACHE) {
+			zio->io_error = fsync(vf->vf_fd) == -1 ? ESUCCESS : errno;
+                } else {
 			zio->io_error = SET_ERROR(ENOTSUP);
 		}
 
@@ -214,21 +243,7 @@ vdev_file_io_start(zio_t *zio)
 	ASSERT(zio->io_type == ZIO_TYPE_READ || zio->io_type == ZIO_TYPE_WRITE);
 	zio->io_target_timestamp = zio_handle_io_delay(zio);
 
-	vb = kmem_alloc(sizeof (vdev_buf_t), KM_SLEEP);
-
-	vb->vb_io = zio;
-	bp = &vb->vb_buf;
-
-	bioinit(bp);
-	bp->b_flags = (zio->io_type == ZIO_TYPE_READ ? B_READ : B_WRITE);
-	bp->b_bcount = zio->io_size;
-	bp->b_un.b_addr = zio->io_data;
-	bp->b_lblkno = lbtodb(zio->io_offset);
-	bp->b_bufsize = zio->io_size;
-	bp->b_private = vf->vf_vnode;
-	bp->b_iodone = (int (*)())vdev_file_io_intr;
-
-	VERIFY3U(taskq_dispatch(system_taskq, vdev_file_io_strategy, bp,
+	VERIFY3U(taskq_dispatch(system_taskq, vdev_file_io_strategy, zio,
 	    TQ_SLEEP), !=, 0);
 }
 
@@ -236,6 +251,42 @@ vdev_file_io_start(zio_t *zio)
 static void
 vdev_file_io_done(zio_t *zio)
 {
+}
+
+int
+vdev_disk_physio(vdev_t *vd, caddr_t data,
+    size_t size, uint64_t offset, int flags, boolean_t isdump)
+{
+        int error;
+        vdev_file_t *vf = vd->vdev_tsd;
+
+        // No support for kernel core dumps. Of course, the call path for this
+        // routine only occurs when we use a zvol for dumps (via zvol_dump()),
+        // so the whole ting it probably moot :-/
+        VERIFY3(isdump, ==, B_FALSE);
+
+        // This is supposed to be a leaf vdev.
+        VERIFY3(vd->vdev_ops->vdev_op_leaf, ==, B_TRUE);
+        VERIFY(vd->vdev_ops == &vdev_file_ops || vd->vdev_ops == &vdev_disk_ops);
+        VERIFY(flags & B_READ || flags & B_WRITE);
+
+        if (flags & B_READ) {
+                if (pread(vf->vf_fd, data, size, offset) == -1) {
+                        error = errno;
+                }
+        }
+
+        if (flags & B_WRITE) {
+                if (pwrite(vf->vf_fd, data, size, offset) == -1) {
+                        error = errno;
+                }
+        }
+
+        if (error == 0 && (flags & B_WRITE)) {
+                fsync(vf->vf_fd);
+        }
+
+        return error;
 }
 
 vdev_ops_t vdev_file_ops = {
@@ -254,7 +305,6 @@ vdev_ops_t vdev_file_ops = {
 /*
  * From userland we access disks just like files.
  */
-#ifndef _KERNEL
 
 vdev_ops_t vdev_disk_ops = {
 	vdev_file_open,
@@ -269,4 +319,4 @@ vdev_ops_t vdev_disk_ops = {
 	B_TRUE			/* leaf vdev */
 };
 
-#endif
+/* vim: set sw=8 ts=8 et: */
