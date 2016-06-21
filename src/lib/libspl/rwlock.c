@@ -43,7 +43,7 @@ void rw_init(krwlock_t * rw, const char * name, krw_type_t type, void * arg)
     (void)arg;
     (void)name;
 
-    VERIFY3(type, ==, RW_DEFAULT);
+    /* NOTE: Solaris ignores the type argument, and ZFS passes junk (0). */
     rw->writer = INVALID_KTHREAD;
     ck_rwlock_init((ck_rwlock_t *)rw);
 }
