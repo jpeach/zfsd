@@ -66,6 +66,9 @@ clock_t cv_timedwait(kcondvar_t * cv, kmutex_t * m, clock_t timeout)
         // Return >0 on signalled wakeup.
         return 1;
     case ETIMEDOUT:
+        // Update the mutex holder since we now own the lock.
+        m->holder = pthread_to_kthread(pthread_self());
+
         // Return -1 on timeout.
         return -1;
     default:
