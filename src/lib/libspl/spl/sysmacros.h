@@ -29,6 +29,8 @@
 extern "C" {
 #endif
 
+#define printflike(fmt, args)  __attribute__((format(printf, fmt, args)))
+
 /* From Illumos usr/src/uts/common/sys/param.h ... */
 #define MAXBSIZE        8192
 #define DEV_BSIZE       512
