@@ -2,16 +2,22 @@ check_PROGRAMS += check-tests
 
 check_tests_SOURCES = \
 	tests/link.cc \
-	tests/spl.cc \
-	tests/main.cc
+	tests/main.cc \
+	tests/spa.cc \
+	tests/spl.cc
 
 check_tests_LDADD = \
+	libzfs.la \
+	libnvpair.la \
+	libskein.la \
+	libspl.la \
 	$(LIBCK_LIBS) \
 	$(LUAJIT_LIBS) \
+	$(CRYPTO_LIBS) \
+	$(PTHREAD_LIBS) \
+	$(ZLIB_LIBS) \
 	$(LIBLTDL) \
-	libnvpair.la \
-	libspl.la \
-	-ldl
+	$(LIBADD_DL)
 
 # Always build test programs.
 noinst_PROGRAMS += $(check_PROGRAMS)

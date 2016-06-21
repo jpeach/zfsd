@@ -30,6 +30,16 @@ AM_CPPFLAGS = \
 	-I$(srcdir)/lib/libspl \
 	-I$(srcdir)/lib/libskein
 
+AM_CFLAGS = \
+	$(PTHREAD_CFLAGS)
+
+AM_CXXFLAGS = \
+	$(PTHREAD_CFLAGS)
+
+AM_LDFLAGS = \
+        $(ZLIB_LDFLAGS) \
+        $(CRYPTO_LDFLAGS)
+
 include lib/libnvpair/Makefile.inc
 include lib/libskein/Makefile.inc
 include lib/libspl/Makefile.inc

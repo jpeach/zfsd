@@ -69,6 +69,9 @@ extern taskq_t *system_taskq;
 extern void	taskq_init(void);
 extern void	taskq_mp_init(void);
 
+extern void     system_taskq_init(void);
+extern void     system_taskq_fini(void);
+
 extern taskq_t	*taskq_create(const char *, int, pri_t, int, int, uint_t);
 extern taskq_t	*taskq_create_instance(const char *, int, int, pri_t, int,
     int, uint_t);
