@@ -23,6 +23,10 @@
 
 #include <sys/kmem.h>
 #include <spl/debug.h>
+#include <string.h>
+
+/* POINTER_IS_VALID depends on scribbling on uninitialized memory. */
+#define KMEM_UNINITIALIZED_PATTERN 0xbaddcafe
 
 struct vmem
 {
@@ -95,6 +99,7 @@ kmem_cache_alloc(kmem_cache_t *cp, unsigned kmflags)
 
     ptr = kmem_alloc(cp->km_objsize, kmflags);
     if (ptr) {
+        memset(ptr, KMEM_UNINITIALIZED_PATTERN, cp->km_objsize);
         kmem_cache_object_init(cp, ptr, kmflags);
         cp->km_count++;
     }
