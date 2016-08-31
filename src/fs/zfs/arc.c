@@ -5121,15 +5121,6 @@ arc_write_children_ready(zio_t *zio)
 	callback->awcb_children_ready(zio, buf, callback->awcb_private);
 }
 
-static void
-arc_write_children_ready(zio_t *zio)
-{
-	arc_write_callback_t *callback = zio->io_private;
-	arc_buf_t *buf = callback->awcb_buf;
-
-	callback->awcb_children_ready(zio, buf, callback->awcb_private);
-}
-
 /*
  * The SPA calls this callback for each physical write that happens on behalf
  * of a logical write.  See the comment in dbuf_write_physdone() for details.
