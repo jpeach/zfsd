@@ -21,7 +21,20 @@
  *  limitations under the License.
  */
 
-#define CATCH_CONFIG_MAIN
+#define CATCH_CONFIG_RUNNER
 #include <catch.hpp>
+#include <spl/list.h>
+#include <sys/zfs_debug.h>
+
+int main(int argc, char* const argv[])
+{
+    // Enable all debugging flags for the tests.
+    zfs_flags = ~0;
+
+    // Turn on all debug logging.
+    setenv("ZFS_DEBUG", "on,long", 0 /* overwrite */);
+
+    return Catch::Session().run(argc, argv);
+}
 
 /* vim: set sts=4 sw=4 ts=4 tw=79 et: */
