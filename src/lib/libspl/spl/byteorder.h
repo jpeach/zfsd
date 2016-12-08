@@ -39,12 +39,13 @@ extern "C" {
 #define BE_32(x)	be32toh(x)
 #define BE_64(x)	be64toh(x)
 
-/* Use __packed__ to get the compiler to generated an unaligned load. See 
+/* Use __packed__ to get the compiler to generate an unaligned load. See
  * https://www.kernel.org/doc/Documentation/unaligned-memory-access.txt
  */
 #define UNALIGNED_READ(ptr, N) ({ \
-	struct _u ## N { uint ## N ## _t value; } __attribute__ ((__packed__)); \
-	((const struct _u ## N *)ptr)->value; \
+	struct _s ## N { uint ## N ## _t value; } __attribute__ ((__packed__)); \
+        union _u ## N { const void * _p; const struct _s ## N * _a ; } u = { ._p = ptr }; \
+	u._a->value; \
 })
 
 #define LE_READ(ptr, N)  ({ LE_ ## N (UNALIGNED_READ(ptr, N)); })
