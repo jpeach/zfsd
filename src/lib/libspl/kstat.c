@@ -35,6 +35,11 @@ kstat_create(const char * ks_module, int ks_instance, const char * ks_name,
 }
 
 void
+kstat_named_init(kstat_named_t * knp, const char * name, uchar_t data_type)
+{
+}
+
+void
 kstat_install(kstat_t * ks)
 {
     VERIFY3(ks, ==, NULL);

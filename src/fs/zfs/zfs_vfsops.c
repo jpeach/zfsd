@@ -31,6 +31,7 @@
 #include <sys/zfs_context.h>
 #include <sys/zfs_znode.h>
 #include <sys/dmu.h>
+#include <sys/dmu_objset.h>
 #include <sys/zap.h>
 #endif /* defined(__zfsd__) */
 
@@ -2281,7 +2282,19 @@ zfs_get_zplprop(objset_t *os, zfs_prop_t prop, uint64_t *value)
 	return (error);
 }
 
-#if !defined(__zfsd__)
+#if defined(__zfsd__)
+
+/*
+ * TODO(jpeach) Until we have mounts, everything is unmounted by definition.
+ */
+boolean_t
+zfs_get_vfs_flag_unmounted(objset_t *os)
+{
+    return B_TRUE;
+}
+
+#else /* !defined(__zfsd__) */
+
 /*
  * Return true if the coresponding vfs's unmounted flag is set.
  * Otherwise return false.
