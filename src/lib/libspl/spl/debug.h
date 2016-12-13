@@ -74,6 +74,12 @@ extern void __assert_fail (const char *__assertion, const char *__file,
     } \
 } while (0)
 
+#define EQUIV(A, B) do { \
+    if (!!(A) != !!(B)) { \
+        __assert_fail("(" __STRING(A) ") is equivalent to (" __STRING(B) ")", __FILE__, __LINE__, __func__); \
+    } \
+} while (0)
+
 #ifdef  __cplusplus
 }
 #endif
