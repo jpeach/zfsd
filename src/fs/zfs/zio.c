@@ -1141,16 +1141,6 @@ zio_write_bp_init(zio_t *zio)
 	if (!IO_IS_ALLOCATING(zio))
 		return (ZIO_PIPELINE_CONTINUE);
 
-	if (zio->io_children_ready != NULL) {
-		/*
-		 * Now that all our children are ready, run the callback
-		 * associated with this zio in case it wants to modify the
-		 * data to be written.
-		 */
-		ASSERT3U(zp->zp_level, >, 0);
-		zio->io_children_ready(zio);
-	}
-
 	ASSERT(zio->io_child_type != ZIO_CHILD_DDT);
 
 	if (zio->io_bp_override) {
