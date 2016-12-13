@@ -26,6 +26,7 @@
  * Copyright (c) 2014 Spectra Logic Corporation, All rights reserved.
  * Copyright 2013 Saso Kiselkov. All rights reserved.
  * Copyright (c) 2014 Integros [integros.com]
+ * Copyright 2016 Toomas Soome <tsoome@me.com>
  */
 
 /*
@@ -522,12 +523,6 @@ spa_prop_validate(spa_t *spa, nvlist_t *props)
 				    zfs_prop_to_name(ZFS_PROP_COMPRESSION),
 				    &propval)) == 0 &&
 				    !BOOTFS_COMPRESS_VALID(propval)) {
-					error = SET_ERROR(ENOTSUP);
-				} else if ((error =
-				    dsl_prop_get_int_ds(dmu_objset_ds(os),
-				    zfs_prop_to_name(ZFS_PROP_RECORDSIZE),
-				    &propval)) == 0 &&
-				    propval > SPA_OLD_MAXBLOCKSIZE) {
 					error = SET_ERROR(ENOTSUP);
 				} else {
 					objnum = dmu_objset_id(os);
@@ -1258,6 +1253,19 @@ spa_unload(spa_t *spa)
 	if (spa->spa_sync_on) {
 		txg_sync_stop(spa->spa_dsl_pool);
 		spa->spa_sync_on = B_FALSE;
+	}
+
+	/*
+	 * Even though vdev_free() also calls vdev_metaslab_fini, we need
+	 * to call it earlier, before we wait for async i/o to complete.
+	 * This ensures that there is no async metaslab prefetching, by
+	 * calling taskq_wait(mg_taskq).
+	 */
+	if (spa->spa_root_vdev != NULL) {
+		spa_config_enter(spa, SCL_ALL, FTAG, RW_WRITER);
+		for (int c = 0; c < spa->spa_root_vdev->vdev_children; c++)
+			vdev_metaslab_fini(spa->spa_root_vdev->vdev_child[c]);
+		spa_config_exit(spa, SCL_ALL, FTAG);
 	}
 
 	/*
@@ -6767,8 +6775,6 @@ spa_sync(spa_t *spa, uint64_t txg)
 		spa->spa_config_syncing = NULL;
 	}
 
-	spa->spa_ubsync = spa->spa_uberblock;
-
 	dsl_pool_sync_done(dp, txg);
 
 	mutex_enter(&spa->spa_alloc_lock);
@@ -6793,6 +6799,13 @@ spa_sync(spa_t *spa, uint64_t txg)
 
 	spa->spa_sync_pass = 0;
 
+	/*
+	 * Update the last synced uberblock here. We want to do this at
+	 * the end of spa_sync() so that consumers of spa_last_synced_txg()
+	 * will be guaranteed that all the processing associated with
+	 * that txg has been completed.
+	 */
+	spa->spa_ubsync = spa->spa_uberblock;
 	spa_config_exit(spa, SCL_CONFIG, FTAG);
 
 	spa_handle_ignored_writes(spa);

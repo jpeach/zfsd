@@ -67,6 +67,13 @@ krwlock_t os_lock;
  */
 int dmu_find_threads = 0;
 
+/*
+ * Backfill lower metadnode objects after this many have been freed.
+ * Backfilling negatively impacts object creation rates, so only do it
+ * if there are enough holes to fill.
+ */
+int dmu_rescan_dnode_threshold = 131072;
+
 static void dmu_objset_find_dp_cb(void *arg);
 
 void
@@ -332,9 +339,8 @@ dmu_objset_open_impl(spa_t *spa, dsl_dataset_t *ds, blkptr_t *bp,
 		/* Increase the blocksize if we are permitted. */
 		if (spa_version(spa) >= SPA_VERSION_USERSPACE &&
 		    arc_buf_size(os->os_phys_buf) < sizeof (objset_phys_t)) {
-			arc_buf_t *buf = arc_alloc_buf(spa,
-			    sizeof (objset_phys_t), &os->os_phys_buf,
-			    ARC_BUFC_METADATA);
+			arc_buf_t *buf = arc_alloc_buf(spa, &os->os_phys_buf,
+			    ARC_BUFC_METADATA, sizeof (objset_phys_t));
 			bzero(buf->b_data, sizeof (objset_phys_t));
 			bcopy(os->os_phys_buf->b_data, buf->b_data,
 			    arc_buf_size(os->os_phys_buf));
@@ -347,8 +353,8 @@ dmu_objset_open_impl(spa_t *spa, dsl_dataset_t *ds, blkptr_t *bp,
 	} else {
 		int size = spa_version(spa) >= SPA_VERSION_USERSPACE ?
 		    sizeof (objset_phys_t) : OBJSET_OLD_PHYS_SIZE;
-		os->os_phys_buf = arc_alloc_buf(spa, size,
-		    &os->os_phys_buf, ARC_BUFC_METADATA);
+		os->os_phys_buf = arc_alloc_buf(spa, &os->os_phys_buf,
+		    ARC_BUFC_METADATA, size);
 		os->os_phys = os->os_phys_buf->b_data;
 		bzero(os->os_phys, size);
 	}
@@ -489,8 +495,10 @@ dmu_objset_from_ds(dsl_dataset_t *ds, objset_t **osp)
 	mutex_enter(&ds->ds_opening_lock);
 	if (ds->ds_objset == NULL) {
 		objset_t *os;
+		rrw_enter(&ds->ds_bp_rwlock, RW_READER, FTAG);
 		err = dmu_objset_open_impl(dsl_dataset_get_spa(ds),
 		    ds, dsl_dataset_get_blkptr(ds), &os);
+		rrw_exit(&ds->ds_bp_rwlock, FTAG);
 
 		if (err == 0) {
 			mutex_enter(&ds->ds_lock);
@@ -876,9 +884,11 @@ dmu_objset_create_sync(void *arg, dmu_tx_t *tx)
 	    doca->doca_cred, tx);
 
 	VERIFY0(dsl_dataset_hold_obj(pdd->dd_pool, obj, FTAG, &ds));
+	rrw_enter(&ds->ds_bp_rwlock, RW_READER, FTAG);
 	bp = dsl_dataset_get_blkptr(ds);
 	os = dmu_objset_create_impl(pdd->dd_pool->dp_spa,
 	    ds, bp, doca->doca_type, tx);
+	rrw_exit(&ds->ds_bp_rwlock, FTAG);
 
 	if (doca->doca_userfunc != NULL) {
 		doca->doca_userfunc(os, doca->doca_userarg,
@@ -1051,7 +1061,6 @@ dmu_objset_write_ready(zio_t *zio, arc_buf_t *abuf, void *arg)
 	dnode_phys_t *dnp = &os->os_phys->os_meta_dnode;
 
 	ASSERT(!BP_IS_EMBEDDED(bp));
-	ASSERT3P(bp, ==, os->os_rootbp);
 	ASSERT3U(BP_GET_TYPE(bp), ==, DMU_OT_OBJSET);
 	ASSERT0(BP_GET_LEVEL(bp));
 
@@ -1064,6 +1073,11 @@ dmu_objset_write_ready(zio_t *zio, arc_buf_t *abuf, void *arg)
 	bp->blk_fill = 0;
 	for (int i = 0; i < dnp->dn_nblkptr; i++)
 		bp->blk_fill += BP_GET_FILL(&dnp->dn_blkptr[i]);
+	if (os->os_dsl_dataset != NULL)
+		rrw_enter(&os->os_dsl_dataset->ds_bp_rwlock, RW_WRITER, FTAG);
+	*os->os_rootbp = *bp;
+	if (os->os_dsl_dataset != NULL)
+		rrw_exit(&os->os_dsl_dataset->ds_bp_rwlock, FTAG);
 }
 
 /* ARGSUSED */
@@ -1083,6 +1097,7 @@ dmu_objset_write_done(zio_t *zio, arc_buf_t *abuf, void *arg)
 		(void) dsl_dataset_block_kill(ds, bp_orig, tx, B_TRUE);
 		dsl_dataset_block_born(ds, bp, tx);
 	}
+	kmem_free(bp, sizeof (*bp));
 }
 
 /* called from dsl */
@@ -1096,6 +1111,8 @@ dmu_objset_sync(objset_t *os, zio_t *pio, dmu_tx_t *tx)
 	list_t *list;
 	list_t *newlist = NULL;
 	dbuf_dirty_record_t *dr;
+	blkptr_t *blkptr_copy = kmem_alloc(sizeof (*os->os_rootbp), KM_SLEEP);
+	*blkptr_copy = *os->os_rootbp;
 
 	dprintf_ds(os->os_dsl_dataset, "txg=%llu\n", tx->tx_txg);
 
@@ -1120,10 +1137,10 @@ dmu_objset_sync(objset_t *os, zio_t *pio, dmu_tx_t *tx)
 	    ZB_ROOT_OBJECT, ZB_ROOT_LEVEL, ZB_ROOT_BLKID);
 	arc_release(os->os_phys_buf, &os->os_phys_buf);
 
-	dmu_write_policy(os, NULL, 0, 0, &zp);
+	dmu_write_policy(os, NULL, 0, 0, ZIO_COMPRESS_INHERIT, &zp);
 
 	zio = arc_write(pio, os->os_spa, tx->tx_txg,
-	    os->os_rootbp, os->os_phys_buf, DMU_OS_IS_L2CACHEABLE(os),
+	    blkptr_copy, os->os_phys_buf, DMU_OS_IS_L2CACHEABLE(os),
 	    &zp, dmu_objset_write_ready, NULL, NULL, dmu_objset_write_done,
 	    os, ZIO_PRIORITY_ASYNC_WRITE, ZIO_FLAG_MUSTSUCCEED, &zb);
 
@@ -1165,6 +1182,13 @@ dmu_objset_sync(objset_t *os, zio_t *pio, dmu_tx_t *tx)
 		if (dr->dr_zio)
 			zio_nowait(dr->dr_zio);
 	}
+
+	/* Enable dnode backfill if enough objects have been freed. */
+	if (os->os_freed_dnodes >= dmu_rescan_dnode_threshold) {
+		os->os_rescan_dnodes = B_TRUE;
+		os->os_freed_dnodes = 0;
+	}
+
 	/*
 	 * Free intent log blocks up to this tx.
 	 */
@@ -1196,18 +1220,83 @@ dmu_objset_userused_enabled(objset_t *os)
 	    DMU_USERUSED_DNODE(os) != NULL);
 }
 
+typedef struct userquota_node {
+	uint64_t uqn_id;
+	int64_t uqn_delta;
+	avl_node_t uqn_node;
+} userquota_node_t;
+
+typedef struct userquota_cache {
+	avl_tree_t uqc_user_deltas;
+	avl_tree_t uqc_group_deltas;
+} userquota_cache_t;
+
+static int
+userquota_compare(const void *l, const void *r)
+{
+	const userquota_node_t *luqn = l;
+	const userquota_node_t *ruqn = r;
+
+	if (luqn->uqn_id < ruqn->uqn_id)
+		return (-1);
+	if (luqn->uqn_id > ruqn->uqn_id)
+		return (1);
+	return (0);
+}
+
 static void
-do_userquota_update(objset_t *os, uint64_t used, uint64_t flags,
-    uint64_t user, uint64_t group, boolean_t subtract, dmu_tx_t *tx)
+do_userquota_cacheflush(objset_t *os, userquota_cache_t *cache, dmu_tx_t *tx)
+{
+	void *cookie;
+	userquota_node_t *uqn;
+
+	ASSERT(dmu_tx_is_syncing(tx));
+
+	cookie = NULL;
+	while ((uqn = avl_destroy_nodes(&cache->uqc_user_deltas,
+	    &cookie)) != NULL) {
+		VERIFY0(zap_increment_int(os, DMU_USERUSED_OBJECT,
+		    uqn->uqn_id, uqn->uqn_delta, tx));
+		kmem_free(uqn, sizeof (*uqn));
+	}
+	avl_destroy(&cache->uqc_user_deltas);
+
+	cookie = NULL;
+	while ((uqn = avl_destroy_nodes(&cache->uqc_group_deltas,
+	    &cookie)) != NULL) {
+		VERIFY0(zap_increment_int(os, DMU_GROUPUSED_OBJECT,
+		    uqn->uqn_id, uqn->uqn_delta, tx));
+		kmem_free(uqn, sizeof (*uqn));
+	}
+	avl_destroy(&cache->uqc_group_deltas);
+}
+
+static void
+userquota_update_cache(avl_tree_t *avl, uint64_t id, int64_t delta)
+{
+	userquota_node_t search = { .uqn_id = id };
+	avl_index_t idx;
+
+	userquota_node_t *uqn = avl_find(avl, &search, &idx);
+	if (uqn == NULL) {
+		uqn = kmem_zalloc(sizeof (*uqn), KM_SLEEP);
+		uqn->uqn_id = id;
+		avl_insert(avl, uqn, idx);
+	}
+	uqn->uqn_delta += delta;
+}
+
+static void
+do_userquota_update(userquota_cache_t *cache, uint64_t used, uint64_t flags,
+    uint64_t user, uint64_t group, boolean_t subtract)
 {
 	if ((flags & DNODE_FLAG_USERUSED_ACCOUNTED)) {
 		int64_t delta = DNODE_SIZE + used;
 		if (subtract)
 			delta = -delta;
-		VERIFY3U(0, ==, zap_increment_int(os, DMU_USERUSED_OBJECT,
-		    user, delta, tx));
-		VERIFY3U(0, ==, zap_increment_int(os, DMU_GROUPUSED_OBJECT,
-		    group, delta, tx));
+
+		userquota_update_cache(&cache->uqc_user_deltas, user, delta);
+		userquota_update_cache(&cache->uqc_group_deltas, group, delta);
 	}
 }
 
@@ -1216,8 +1305,14 @@ dmu_objset_do_userquota_updates(objset_t *os, dmu_tx_t *tx)
 {
 	dnode_t *dn;
 	list_t *list = &os->os_synced_dnodes;
+	userquota_cache_t cache = { 0 };
 
 	ASSERT(list_head(list) == NULL || dmu_objset_userused_enabled(os));
+
+	avl_create(&cache.uqc_user_deltas, userquota_compare,
+	    sizeof (userquota_node_t), offsetof(userquota_node_t, uqn_node));
+	avl_create(&cache.uqc_group_deltas, userquota_compare,
+	    sizeof (userquota_node_t), offsetof(userquota_node_t, uqn_node));
 
 	while (dn = list_head(list)) {
 		int flags;
@@ -1228,32 +1323,26 @@ dmu_objset_do_userquota_updates(objset_t *os, dmu_tx_t *tx)
 
 		/* Allocate the user/groupused objects if necessary. */
 		if (DMU_USERUSED_DNODE(os)->dn_type == DMU_OT_NONE) {
-			VERIFY(0 == zap_create_claim(os,
+			VERIFY0(zap_create_claim(os,
 			    DMU_USERUSED_OBJECT,
 			    DMU_OT_USERGROUP_USED, DMU_OT_NONE, 0, tx));
-			VERIFY(0 == zap_create_claim(os,
+			VERIFY0(zap_create_claim(os,
 			    DMU_GROUPUSED_OBJECT,
 			    DMU_OT_USERGROUP_USED, DMU_OT_NONE, 0, tx));
 		}
 
-		/*
-		 * We intentionally modify the zap object even if the
-		 * net delta is zero.  Otherwise
-		 * the block of the zap obj could be shared between
-		 * datasets but need to be different between them after
-		 * a bprewrite.
-		 */
-
 		flags = dn->dn_id_flags;
 		ASSERT(flags);
 		if (flags & DN_ID_OLD_EXIST)  {
-			do_userquota_update(os, dn->dn_oldused, dn->dn_oldflags,
-			    dn->dn_olduid, dn->dn_oldgid, B_TRUE, tx);
+			do_userquota_update(&cache,
+			    dn->dn_oldused, dn->dn_oldflags,
+			    dn->dn_olduid, dn->dn_oldgid, B_TRUE);
 		}
 		if (flags & DN_ID_NEW_EXIST) {
-			do_userquota_update(os, DN_USED_BYTES(dn->dn_phys),
+			do_userquota_update(&cache,
+			    DN_USED_BYTES(dn->dn_phys),
 			    dn->dn_phys->dn_flags,  dn->dn_newuid,
-			    dn->dn_newgid, B_FALSE, tx);
+			    dn->dn_newgid, B_FALSE);
 		}
 
 		mutex_enter(&dn->dn_mtx);
@@ -1274,6 +1363,7 @@ dmu_objset_do_userquota_updates(objset_t *os, dmu_tx_t *tx)
 		list_remove(list, dn);
 		dnode_rele(dn, list);
 	}
+	do_userquota_cacheflush(os, &cache, tx);
 }
 
 /*
@@ -1615,6 +1705,7 @@ typedef struct dmu_objset_find_ctx {
 	taskq_t		*dc_tq;
 	dsl_pool_t	*dc_dp;
 	uint64_t	dc_ddobj;
+	char		*dc_ddname; /* last component of ddobj's name */
 	int		(*dc_func)(dsl_pool_t *, dsl_dataset_t *, void *);
 	void		*dc_arg;
 	int		dc_flags;
@@ -1626,7 +1717,6 @@ static void
 dmu_objset_find_dp_impl(dmu_objset_find_ctx_t *dcp)
 {
 	dsl_pool_t *dp = dcp->dc_dp;
-	dmu_objset_find_ctx_t *child_dcp;
 	dsl_dir_t *dd;
 	dsl_dataset_t *ds;
 	zap_cursor_t zc;
@@ -1638,7 +1728,12 @@ dmu_objset_find_dp_impl(dmu_objset_find_ctx_t *dcp)
 	if (*dcp->dc_error != 0)
 		goto out;
 
-	err = dsl_dir_hold_obj(dp, dcp->dc_ddobj, NULL, FTAG, &dd);
+	/*
+	 * Note: passing the name (dc_ddname) here is optional, but it
+	 * improves performance because we don't need to call
+	 * zap_value_search() to determine the name.
+	 */
+	err = dsl_dir_hold_obj(dp, dcp->dc_ddobj, dcp->dc_ddname, FTAG, &dd);
 	if (err != 0)
 		goto out;
 
@@ -1663,9 +1758,11 @@ dmu_objset_find_dp_impl(dmu_objset_find_ctx_t *dcp)
 			    sizeof (uint64_t));
 			ASSERT3U(attr->za_num_integers, ==, 1);
 
-			child_dcp = kmem_alloc(sizeof (*child_dcp), KM_SLEEP);
+			dmu_objset_find_ctx_t *child_dcp =
+			    kmem_alloc(sizeof (*child_dcp), KM_SLEEP);
 			*child_dcp = *dcp;
 			child_dcp->dc_ddobj = attr->za_first_integer;
+			child_dcp->dc_ddname = spa_strdup(attr->za_name);
 			if (dcp->dc_tq != NULL)
 				(void) taskq_dispatch(dcp->dc_tq,
 				    dmu_objset_find_dp_cb, child_dcp, TQ_SLEEP);
@@ -1708,16 +1805,25 @@ dmu_objset_find_dp_impl(dmu_objset_find_ctx_t *dcp)
 		}
 	}
 
-	dsl_dir_rele(dd, FTAG);
 	kmem_free(attr, sizeof (zap_attribute_t));
 
-	if (err != 0)
+	if (err != 0) {
+		dsl_dir_rele(dd, FTAG);
 		goto out;
+	}
 
 	/*
 	 * Apply to self.
 	 */
 	err = dsl_dataset_hold_obj(dp, thisobj, FTAG, &ds);
+
+	/*
+	 * Note: we hold the dir while calling dsl_dataset_hold_obj() so
+	 * that the dir will remain cached, and we won't have to re-instantiate
+	 * it (which could be expensive due to finding its name via
+	 * zap_value_search()).
+	 */
+	dsl_dir_rele(dd, FTAG);
 	if (err != 0)
 		goto out;
 	err = dcp->dc_func(dp, ds, dcp->dc_arg);
@@ -1732,6 +1838,8 @@ out:
 		mutex_exit(dcp->dc_error_lock);
 	}
 
+	if (dcp->dc_ddname != NULL)
+		spa_strfree(dcp->dc_ddname);
 	kmem_free(dcp, sizeof (*dcp));
 }
 
@@ -1776,6 +1884,7 @@ dmu_objset_find_dp(dsl_pool_t *dp, uint64_t ddobj,
 	dcp->dc_tq = NULL;
 	dcp->dc_dp = dp;
 	dcp->dc_ddobj = ddobj;
+	dcp->dc_ddname = NULL;
 	dcp->dc_func = func;
 	dcp->dc_arg = arg;
 	dcp->dc_flags = flags;

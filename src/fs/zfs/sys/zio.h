@@ -25,6 +25,7 @@
  * Copyright (c) 2012, 2016 by Delphix. All rights reserved.
  * Copyright (c) 2013 by Saso Kiselkov. All rights reserved.
  * Copyright (c) 2013, Joyent, Inc. All rights reserved.
+ * Copyright 2016 Toomas Soome <tsoome@me.com>
  */
 
 #ifndef _ZIO_H
@@ -103,26 +104,6 @@ enum zio_checksum {
 #define	ZIO_DEDUPCHECKSUM	ZIO_CHECKSUM_SHA256
 #define	ZIO_DEDUPDITTO_MIN	100
 
-enum zio_compress {
-	ZIO_COMPRESS_INHERIT = 0,
-	ZIO_COMPRESS_ON,
-	ZIO_COMPRESS_OFF,
-	ZIO_COMPRESS_LZJB,
-	ZIO_COMPRESS_EMPTY,
-	ZIO_COMPRESS_GZIP_1,
-	ZIO_COMPRESS_GZIP_2,
-	ZIO_COMPRESS_GZIP_3,
-	ZIO_COMPRESS_GZIP_4,
-	ZIO_COMPRESS_GZIP_5,
-	ZIO_COMPRESS_GZIP_6,
-	ZIO_COMPRESS_GZIP_7,
-	ZIO_COMPRESS_GZIP_8,
-	ZIO_COMPRESS_GZIP_9,
-	ZIO_COMPRESS_ZLE,
-	ZIO_COMPRESS_LZ4,
-	ZIO_COMPRESS_FUNCTIONS
-};
-
 /*
  * The number of "legacy" compression functions which can be set on individual
  * objects.
@@ -141,6 +122,15 @@ enum zio_compress {
 #define	BOOTFS_COMPRESS_VALID(compress)			\
 	((compress) == ZIO_COMPRESS_LZJB ||		\
 	(compress) == ZIO_COMPRESS_LZ4 ||		\
+	(compress) == ZIO_COMPRESS_GZIP_1 ||		\
+	(compress) == ZIO_COMPRESS_GZIP_2 ||		\
+	(compress) == ZIO_COMPRESS_GZIP_3 ||		\
+	(compress) == ZIO_COMPRESS_GZIP_4 ||		\
+	(compress) == ZIO_COMPRESS_GZIP_5 ||		\
+	(compress) == ZIO_COMPRESS_GZIP_6 ||		\
+	(compress) == ZIO_COMPRESS_GZIP_7 ||		\
+	(compress) == ZIO_COMPRESS_GZIP_8 ||		\
+	(compress) == ZIO_COMPRESS_GZIP_9 ||		\
 	(compress) == ZIO_COMPRESS_ON ||		\
 	(compress) == ZIO_COMPRESS_OFF)
 
@@ -372,6 +362,11 @@ typedef int zio_pipe_stage_t(zio_t *zio);
 #define	ZIO_REEXECUTE_NOW	0x01
 #define	ZIO_REEXECUTE_SUSPEND	0x02
 
+typedef struct zio_alloc_list {
+	list_t  zal_list;
+	uint64_t zal_size;
+} zio_alloc_list_t;
+
 typedef struct zio_link {
 	zio_t		*zl_parent;
 	zio_t		*zl_child;
@@ -413,6 +408,8 @@ struct zio {
 	void		*io_orig_data;
 	uint64_t	io_size;
 	uint64_t	io_orig_size;
+	/* io_lsize != io_orig_size iff this is a raw write */
+	uint64_t	io_lsize;
 
 	/* Stuff for the vdev stack */
 	vdev_t		*io_vd;
@@ -426,6 +423,7 @@ struct zio {
 	avl_node_t	io_queue_node;
 	avl_node_t	io_offset_node;
 	avl_node_t	io_alloc_node;
+	zio_alloc_list_t 	io_alloc_list;
 
 	/* Internal pipeline state */
 	enum zio_flag	io_flags;
@@ -466,11 +464,11 @@ extern zio_t *zio_root(spa_t *spa,
     zio_done_func_t *done, void *private, enum zio_flag flags);
 
 extern zio_t *zio_read(zio_t *pio, spa_t *spa, const blkptr_t *bp, void *data,
-    uint64_t size, zio_done_func_t *done, void *private,
+    uint64_t lsize, zio_done_func_t *done, void *private,
     zio_priority_t priority, enum zio_flag flags, const zbookmark_phys_t *zb);
 
 extern zio_t *zio_write(zio_t *pio, spa_t *spa, uint64_t txg, blkptr_t *bp,
-    void *data, uint64_t size, const zio_prop_t *zp,
+    void *data, uint64_t size, uint64_t psize, const zio_prop_t *zp,
     zio_done_func_t *ready, zio_done_func_t *children_ready,
     zio_done_func_t *physdone, zio_done_func_t *done,
     void *private, zio_priority_t priority, enum zio_flag flags,
