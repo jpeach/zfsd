@@ -207,9 +207,7 @@ vdev_file_io_strategy(void *arg)
 
         if (resid == -1) {
 		zio->io_error = SET_ERROR(errno);
-        }
-
-        if (resid != zio->io_size) {
+        } else if (resid != zio->io_size) {
 		zio->io_error = SET_ERROR(EIO);
         }
 

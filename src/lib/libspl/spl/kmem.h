@@ -50,10 +50,11 @@ typedef enum kmem_cbrc {
         KMEM_CBRC_DONT_KNOW
 } kmem_cbrc_t;
 
-#define kmem_alloc(size, flags)     malloc(size)
-#define kmem_zalloc(size, flags)    calloc(1, size)
-#define kmem_free(ptr, size)        free(ptr)
-#define strfree(ptr)                free(ptr)
+#define kmem_alloc(size, flags)                 malloc(size)
+#define kmem_zalloc(size, flags)                calloc(1, size)
+#define kmem_aligned_alloc(align, size, flags)  aligned_alloc(align, size)
+#define kmem_free(ptr, size)                    free(ptr)
+#define strfree(ptr)                            free(ptr)
 
 #define kmem_asprintf(fmt, ...) ({ \
     char * ptr; \

@@ -41,6 +41,7 @@ struct kmem_cache
     kmem_destructor_t   km_fini;
     void *              km_arg;
     unsigned            km_count;
+    unsigned            km_align;
 };
 
 vmem_t * zio_arena;
@@ -79,6 +80,7 @@ kmem_cache_create(const char *name, size_t bufsize, size_t align,
     cache->km_init = constructor;
     cache->km_fini = destructor;
     cache->km_arg = arg;
+    cache->km_align = align;
 
     return cache;
 }
@@ -97,7 +99,12 @@ kmem_cache_alloc(kmem_cache_t *cp, unsigned kmflags)
 {
     void * ptr;
 
-    ptr = kmem_alloc(cp->km_objsize, kmflags);
+    if (cp->km_align) {
+        ptr = kmem_aligned_alloc(cp->km_align, cp->km_objsize, kmflags);
+    } else {
+        ptr = kmem_alloc(cp->km_objsize, kmflags);
+    }
+
     if (ptr) {
         memset(ptr, KMEM_UNINITIALIZED_PATTERN, cp->km_objsize);
         kmem_cache_object_init(cp, ptr, kmflags);
