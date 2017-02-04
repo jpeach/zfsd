@@ -31,11 +31,20 @@
 #include <spl/types.h>
 #include <spl/debug.h>
 #include <spl/cmn_err.h>
+#include <spl/sdt.h>
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdlib.h>
 
 unsigned spl_flags;
+
+#if DEBUG
+int SET_ERROR(int error)
+{
+	errno = error;
+	return error;
+}
+#endif
 
 /*
  * =========================================================================

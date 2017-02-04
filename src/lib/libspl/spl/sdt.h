@@ -24,6 +24,8 @@
 #ifndef SDT_H_896B5066_A65A_4BFE_9E50_8098BAE6D5BE
 #define SDT_H_896B5066_A65A_4BFE_9E50_8098BAE6D5BE
 
+#include <errno.h>
+
 #ifdef  __cplusplus
 extern "C" {
 #endif
@@ -35,7 +37,12 @@ extern "C" {
 #define DTRACE_PROBE4(...)
 #define DTRACE_PROBE5(...)
 
-#define SET_ERROR(error) (error)
+#if DEBUG
+extern int SET_ERROR(int);
+#else
+#define SET_ERROR(error) ({errno = error})
+#endif
+
 
 #ifdef  __cplusplus
 }
