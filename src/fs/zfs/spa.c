@@ -6973,7 +6973,7 @@ static sysevent_t *
 spa_event_create(spa_t *spa, vdev_t *vd, const char *name)
 {
 	sysevent_t		*ev = NULL;
-#ifdef _KERNEL
+#if defined(_KERNEL) && !defined(__zfsd__)
 	sysevent_attr_list_t	*attr = NULL;
 	sysevent_value_t	value;
 
