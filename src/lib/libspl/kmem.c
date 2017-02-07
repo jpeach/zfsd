@@ -22,6 +22,7 @@
  */
 
 #include <sys/kmem.h>
+#include <spl/atomic.h>
 #include <spl/debug.h>
 #include <string.h>
 
@@ -108,7 +109,7 @@ kmem_cache_alloc(kmem_cache_t *cp, unsigned kmflags)
     if (ptr) {
         memset(ptr, KMEM_UNINITIALIZED_PATTERN, cp->km_objsize);
         kmem_cache_object_init(cp, ptr, kmflags);
-        cp->km_count++;
+        atomic_inc_32(&cp->km_count);
     }
 
     return ptr;
@@ -119,7 +120,7 @@ kmem_cache_free(kmem_cache_t *cp, void *ptr)
 {
     if (ptr) {
         kmem_cache_object_fini(cp, ptr);
-        cp->km_count--;
+        atomic_dec_32(&cp->km_count);
     }
 }
 
