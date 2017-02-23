@@ -5,7 +5,7 @@ AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_AUX_DIR([m4/aux])
 AC_CONFIG_HEADERS([config.h])
 
-AM_INIT_AUTOMAKE([1.11 -Wall silent-rules foreign subdir-objects])
+AM_INIT_AUTOMAKE([1.11 -Wall -Wno-portability silent-rules foreign subdir-objects])
 AM_MAINTAINER_MODE([enable])
 AM_SILENT_RULES([yes])
 
