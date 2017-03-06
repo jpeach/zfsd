@@ -40,7 +40,7 @@ extern "C" {
 #if DEBUG
 extern int SET_ERROR(int);
 #else
-#define SET_ERROR(error) ({errno = error})
+#define SET_ERROR(error) ({errno = (error);})
 #endif
 
 
