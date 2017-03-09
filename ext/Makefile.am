@@ -1,4 +1,4 @@
-SUBDIRS = libck
+SUBDIRS = $(BUNDLED_LIBCK)
 
 # Support verbose LuaJIT builds with "make V=1".
 luajit__v_ = $(luajit__v_$(AM_DEFAULT_VERBOSITY))

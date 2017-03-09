@@ -59,6 +59,8 @@ PKG_CHECK_MODULES([CRYPTO], [libcrypto], [], AC_MSG_ERROR(libcrypto support is r
 # zlib-devel is required.
 PKG_CHECK_MODULES([ZLIB], [zlib], [], AC_MSG_ERROR(zlib support is required))
 
+ZFSD_WITH_CONCURRENCY_KIT([LIBCK], AC_MSG_ERROR(ConcurrencyKit support is required))
+
 # aio-devel is required.
 AX_CHECK_LIBRARY([AIO], [libaio.h], [aio],
     AC_SUBST([AIO_LIBS], [-laio]),
@@ -70,8 +72,6 @@ AX_CHECK_LIBRARY([ACL], [sys/acl.h], [acl],
     AC_SUBST([ACL_LIBS], [-lacl]),
     AC_MSG_ERROR(libacl support is required)
 )
-
-AC_CONFIG_SUBDIRS([ext/libck])
 
 AC_OUTPUT([
     Makefile
