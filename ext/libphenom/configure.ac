@@ -4,6 +4,8 @@ AC_CONFIG_SRCDIR([LICENSE])
 AC_CANONICAL_TARGET
 AC_LANG(C)
 
+AM_SILENT_RULES([yes])
+
 case "$target_os-$target_cpu" in
   solaris*i386)
     dnl force us to consider this a 64-bit system.
@@ -138,13 +140,17 @@ case "$target_os" in
     ;;
 esac
 
+# Use the libck the top-level build detected
+AC_ARG_VAR(LIBCK_CPPFLAGS, [libck CPPFLAGS])
+AC_ARG_VAR(LIBCK_LDFLAGS, [libck LDFLAGS])
+CFLAGS="$CFLAGS $LIBCK_CPPFLAGS"
+LIBS="$LIBS $LIBCK_LDFLAGS -lck"
+
 # If you're bumping the CK max-version here, you must also bump it in
 # travis/deps.sh otherwise you will break the CI build
-if ! $PKG_CONFIG --exists --atleast-version=0.5.0 --max-version=0.5.1 --print-errors ck ; then
-  AC_MSG_ERROR([ck is required])
-fi
-CFLAGS="$CFLAGS `$PKG_CONFIG --cflags ck`"
-LIBS="$LIBS `pkg_config_libs ck`"
+#if ! $PKG_CONFIG --exists --atleast-version=0.5.0 --max-version=0.5.1 --print-errors ck ; then
+#  AC_MSG_ERROR([ck is required])
+#fi
 
 AC_PATH_PROG(PHP, php, true)
 AC_SUBST(PHP)
