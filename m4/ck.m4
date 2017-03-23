@@ -43,20 +43,27 @@ AC_DEFUN([ZFSD_CHECK_CONCURRENCY_KIT], [
     _z_ck_LDFLAGS=$LDFLAGS
     _z_ck_LIBS=$LIBS
 
-    CPPFLAGS="-I$2/include"
 
-    AC_CHECK_HEADER([ck_epoch.h], [
-        for dir in lib64 lib ; do
-            AS_IF([test x$_z_ck_FOUND = xno], [
-                _z_ck_LDPATH="$2/$dir"
-                LDFLAGS="-L$_z_ck_LDPATH"
-                # Unset the cache variable so force a search after
-                # we changed $LDFLAGS
-                unset ac_cv_lib_ck_ck_epoch_init
-                AC_CHECK_LIB([ck], [ck_epoch_init], [_z_ck_FOUND=yes], [_z_ck_FOUND=no])
-            ])
-        done
-    ])
+    for inc in "include" "include/ck" ; do
+        CPPFLAGS="-I$2/$inc"
+
+        unset ac_cv_header_ck_epoch_h
+
+        AC_CHECK_HEADER([ck_epoch.h], [
+            for dir in lib64 lib ; do
+                AS_IF([test x$_z_ck_FOUND = xno], [
+                    _z_ck_LDPATH="$2/$dir"
+                    LDFLAGS="-L$_z_ck_LDPATH"
+                    # Unset the cache variable so force a search after
+                    # we changed $LDFLAGS
+                    unset ac_cv_lib_ck_ck_epoch_init
+                    AC_CHECK_LIB([ck], [ck_epoch_init], [_z_ck_FOUND=yes], [_z_ck_FOUND=no])
+                ])
+            done
+        ])
+
+        AS_IF([test x$_z_ck_FOUND = xyes], [break])
+    done
 
     AC_MSG_CHECKING([for Concurrency Kit in $2])
     AC_MSG_RESULT([$_z_ck_FOUND])
