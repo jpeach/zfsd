@@ -71,7 +71,7 @@ AC_DEFUN([ZFSD_CHECK_CONCURRENCY_KIT], [
     AS_IF([test x$_z_ck_FOUND = xyes], [
         # action-if-not-found
 
-        $1_LDFLAGS="-L$_z_ck_LDPATH -R$_z_ck_LDPATH"
+        $1_LDFLAGS="-L$_z_ck_LDPATH -Wl,-R$_z_ck_LDPATH"
         $1_CPPFLAGS=$CPPFLAGS
         $1_LIBS=-lck
 
