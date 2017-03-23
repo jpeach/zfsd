@@ -255,12 +255,12 @@ int
 vdev_disk_physio(vdev_t *vd, caddr_t data,
     size_t size, uint64_t offset, int flags, boolean_t isdump)
 {
-        int error;
+        int error = 0;
         vdev_file_t *vf = vd->vdev_tsd;
 
         // No support for kernel core dumps. Of course, the call path for this
         // routine only occurs when we use a zvol for dumps (via zvol_dump()),
-        // so the whole ting it probably moot :-/
+        // so the whole thing it probably moot :-/
         VERIFY3(isdump, ==, B_FALSE);
 
         // This is supposed to be a leaf vdev.
