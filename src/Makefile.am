@@ -13,12 +13,16 @@ CATCH_CPPFLAGS = -I$(CATCH)
 LUAJIT_CPPFLAGS = -I$(top_srcdir)/ext/luajit/src
 LUAJIT_LIBS = $(top_builddir)/ext/luajit/src/libluajit.a
 
+PHENOM_CPPFLAGS = -I$(top_srcdir)/ext/libphenom/include
+PHENOM_LIBS = $(top_builddir)/ext/libphenom/.libs/libphenom.a
+
 AM_CPPFLAGS = \
 	-D_KERNEL \
 	$(LTDLINCL) \
 	$(CATCH_CPPFLAGS) \
 	$(LIBCK_CPPFLAGS) \
 	$(LUAJIT_CPPFLAGS) \
+	$(PHENOM_CPPFLAGS) \
 	-I$(srcdir)/include \
 	-I$(srcdir)/fs/include \
 	-I$(srcdir)/fs/zfs \

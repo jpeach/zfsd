@@ -11,6 +11,7 @@ check_tests_LDADD = \
 	libnvpair.la \
 	libskein.la \
 	libspl.la \
+	$(PHENOM_LIBS) \
 	$(LIBCK_LIBS) \
 	$(LUAJIT_LIBS) \
 	$(CRYPTO_LIBS) \
