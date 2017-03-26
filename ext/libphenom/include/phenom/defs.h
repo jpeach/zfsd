@@ -38,7 +38,7 @@
 #define _POSIX_C_SOURCE 200112L
 #else
 #define _XOPEN_SOURCE 700
-#define _POSIX_C_SOURCE 200809
+#define _POSIX_C_SOURCE 200809L
 #endif
 #define _DARWIN_C_SOURCE
 
