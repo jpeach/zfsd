@@ -37,7 +37,7 @@ extern "C" {
 #define DTRACE_PROBE4(...)
 #define DTRACE_PROBE5(...)
 
-#if DEBUG
+#if defined(DEBUG)
 extern int SET_ERROR(int);
 #else
 #define SET_ERROR(error) ({errno = (error);})
