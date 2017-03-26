@@ -311,13 +311,13 @@ void ph_library_init_register(struct ph_library_init_entry *ent);
  * * `PH_DONE` - operation (iteration) completed
  */
 typedef uint32_t ph_result_t;
-#define PH_OK      0
-#define PH_NOMEM   1
-#define PH_BUSY    2
-#define PH_ERR     3 /* programmer too lazy */
-#define PH_NOENT   4
-#define PH_EXISTS  5
-#define PH_DONE    6
+#define PH_OK      0u
+#define PH_NOMEM   1u
+#define PH_BUSY    2u
+#define PH_ERR     3u /* programmer too lazy */
+#define PH_NOENT   4u
+#define PH_EXISTS  5u
+#define PH_DONE    6u
 
 # ifdef __GNUC__
 #  define ph_offsetof(type, field) __builtin_offsetof(type, field)
