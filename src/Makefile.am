@@ -1,6 +1,7 @@
 pkglib_LTLIBRARIES =
 noinst_LTLIBRARIES =
 bin_PROGRAMS =
+sbin_PROGRAMS =
 check_PROGRAMS =
 noinst_PROGRAMS =
 
@@ -42,6 +43,7 @@ AM_LDFLAGS = \
         $(LIBCK_LDFLAGS) \
         $(CRYPTO_LDFLAGS)
 
+include cmd/zfsd/Makefile.inc
 include lib/libnvpair/Makefile.inc
 include lib/libskein/Makefile.inc
 include lib/libspl/Makefile.inc
