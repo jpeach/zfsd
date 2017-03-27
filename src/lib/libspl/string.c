@@ -33,6 +33,8 @@
 #include <sys/types.h>
 #if !defined(__zfsd__)
 #include <sys/null.h>
+#else
+#include <stdlib.h>
 #endif /* !defined(__zfsd__) */
 #include <sys/varargs.h>
 
