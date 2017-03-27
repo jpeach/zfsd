@@ -22,9 +22,10 @@
  */
 
 #include <string>
-
 #include <getopt.h>
 #include <sysexits.h>
+
+#include <ltdl.h>
 
 #include <phenom/defs.h>
 #include <phenom/log.h>
@@ -51,6 +52,9 @@ main(int argc, const char ** argv)
         {"debug", no_argument, nullptr, 'd' },
         {nullptr, 0, nullptr, '\0' }
     };
+
+    LTDL_SET_PRELOADED_SYMBOLS();
+    lt_dlinit();
 
     zfsd_init_phenom();
 

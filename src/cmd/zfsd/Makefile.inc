@@ -4,6 +4,12 @@ zfsd_SOURCES = \
 	cmd/zfsd/init.c \
 	cmd/zfsd/zfsd.cc
 
+# NOTE: We add "-dlopen force" to tell libtool to always generate the
+# preloaded symbol table for LTDL_SET_PRELOADED_SYMBOLS.
+zfsd_LDFLAGS = \
+	$(AM_LDFLAGS) \
+	-dlopen force
+
 zfsd_LDADD = \
 	libzfs.la \
 	libnvpair.la \
