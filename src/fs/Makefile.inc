@@ -29,6 +29,7 @@ libzfs_la_SOURCES = \
 	fs/zfs/ddt.c \
 	fs/zfs/ddt_zap.c \
 	fs/zfs/dmu.c \
+	fs/zfs/dmu_diff.c \
 	fs/zfs/dmu_object.c \
 	fs/zfs/dmu_objset.c \
 	fs/zfs/dmu_send.c \
@@ -61,12 +62,12 @@ libzfs_la_SOURCES = \
 	fs/zfs/sha256.c \
 	fs/zfs/skein_zfs.c \
 	fs/zfs/spa.c \
+	fs/zfs/space_map.c \
+	fs/zfs/space_reftree.c \
 	fs/zfs/spa_config.c \
 	fs/zfs/spa_errlog.c \
 	fs/zfs/spa_history.c \
 	fs/zfs/spa_misc.c \
-	fs/zfs/space_map.c \
-	fs/zfs/space_reftree.c \
 	fs/zfs/sys/arc.h \
 	fs/zfs/sys/blkptr.h \
 	fs/zfs/sys/bplist.h \
@@ -102,19 +103,19 @@ libzfs_la_SOURCES = \
 	fs/zfs/sys/rrwlock.h \
 	fs/zfs/sys/sa.h \
 	fs/zfs/sys/sa_impl.h \
-	fs/zfs/sys/spa.h \
 	fs/zfs/sys/spa_boot.h \
-	fs/zfs/sys/spa_impl.h \
 	fs/zfs/sys/space_map.h \
 	fs/zfs/sys/space_reftree.h \
+	fs/zfs/sys/spa.h \
+	fs/zfs/sys/spa_impl.h \
 	fs/zfs/sys/txg.h \
 	fs/zfs/sys/txg_impl.h \
 	fs/zfs/sys/uberblock.h \
 	fs/zfs/sys/uberblock_impl.h \
 	fs/zfs/sys/unique.h \
-	fs/zfs/sys/vdev.h \
 	fs/zfs/sys/vdev_disk.h \
 	fs/zfs/sys/vdev_file.h \
+	fs/zfs/sys/vdev.h \
 	fs/zfs/sys/vdev_impl.h \
 	fs/zfs/sys/vdev_raidz.h \
 	fs/zfs/sys/zap.h \
@@ -136,9 +137,9 @@ libzfs_la_SOURCES = \
 	fs/zfs/sys/zfs_znode.h \
 	fs/zfs/sys/zil.h \
 	fs/zfs/sys/zil_impl.h \
-	fs/zfs/sys/zio.h \
 	fs/zfs/sys/zio_checksum.h \
 	fs/zfs/sys/zio_compress.h \
+	fs/zfs/sys/zio.h \
 	fs/zfs/sys/zio_impl.h \
 	fs/zfs/sys/zio_priority.h \
 	fs/zfs/sys/zrlock.h \
@@ -161,9 +162,11 @@ libzfs_la_SOURCES = \
 	fs/zfs/zfs_byteswap.c \
 	fs/zfs/zfs_debug.c \
 	fs/zfs/zfs_fm.c \
+	fs/zfs/zfs_log.c \
 	fs/zfs/zfs_onexit.c \
 	fs/zfs/zfs_replay.c \
 	fs/zfs/zfs_rlock.c \
+	fs/zfs/zfs_sa.c \
 	fs/zfs/zfs_vfsops.c \
 	fs/zfs/zil.c \
 	fs/zfs/zio.c \
@@ -182,15 +185,12 @@ libzfs_la_SOURCES += \
 
 libzfs_la_NOTYET =  \
 	fs/zfs/zfs_ioctl.c \
-	fs/zfs/dmu_diff.c \
 	fs/zfs/vdev_disk.c \
 	fs/zfs/vdev_file.c \
 	fs/zfs/zfs_acl.c \
 	fs/zfs/zfs_ctldir.c \
 	fs/zfs/zfs_dir.c \
 	fs/zfs/zfs_fuid.c \
-	fs/zfs/zfs_log.c \
-	fs/zfs/zfs_sa.c \
 	fs/zfs/zfs_vnops.c \
 	fs/zfs/zfs_znode.c \
 	fs/zfs/zvol.c
